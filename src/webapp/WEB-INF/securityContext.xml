@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns="http://www.springframework.org/schema/security"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/security
+       http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <!-- auto-config="true" > Automatically registers a login form, BASIC authentication,
+    logout services. use-expressions Enables EL-expressions in the access attribute -->
+    <http auto-config="true" use-expressions="true">
+
+        <!--used to define the set of URL patterns that the application is interested in
+        and to configure how they should be handled. It is used to construct the
+        FilterInvocationSecurityMetadataSource used by the FilterSecurityInterceptor-->
+        <intercept-url pattern="/newpost" access="hasRole('ROLE_ADMIN')"/>
+        <!--Если попытаться войти без логина на страницу в этом маппинге (например http://localhost:8080/user/),
+        то будет переброшено на страницу, указанную в form-login login-page='pageName.html' -->
+        <intercept-url pattern="/user/**" access="hasAnyRole('ROLE_ADMIN','ROLE_SUPER_USER', 'ROLE_USER')"/>
+        <access-denied-handler error-page="/error403" />
+        <!--login-page="/login.html"-->
+        <!--authentication-failure-url="/login.html?error=true"-->
+        <form-login login-page="/login"
+                    username-parameter="j_username"
+                    password-parameter="j_password"
+                    login-processing-url="/j_spring_security_check"
+                    authentication-failure-url="/login?error=true"
+        />
+
+        <logout logout-url="/j_spring_security_logout" logout-success-url="/"/>
+        <!--Save logged user in cookie with name key='name' -->
+        <remember-me key="myKey" token-validity-seconds="600"/>
+
+        <csrf disabled="true"/>
+
+    </http>
+
+    <jdbc-user-service id="jdbcUserService" data-source-ref="dataSource"
+                       users-by-username-query="SELECT EMAIL, PASSWORD, ENABLED FROM USER WHERE EMAIL=?"
+                       authorities-by-username-query="SELECT USERNAME, ACCESS_GROUP
+        	 FROM AUTHORITIES WHERE USERNAME = ? "/>
+
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider user-service-ref="jdbcUserService"/>
+    </authentication-manager>
+
+
+</beans:beans>
