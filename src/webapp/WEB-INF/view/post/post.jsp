@@ -67,7 +67,7 @@
                         <form:form name="sentComment" id="contactForm" action="${send}"
                                    method="post" modelAttribute="commentModel">
                             <div class="row control-access_group">
-                                <div class="form-access_group col-xs-12 floating-label-form-access_group controls">
+                                <div class="form-access_group floating-label-form-access_group controls">
                                     <label>Add comment</label>
                                     <textarea rows="10" cols="100" class="form-control" id="text" name="text"
                                               required maxlength="1500" style="resize:none"
@@ -78,7 +78,7 @@
                             </div>
                             <div id="success"></div>
                             <div class="row">
-                                <div class="form-access_group col-xs-12">
+                                <div class="form-access_group">
                                     <button type="submit" class="btn btn-default">Send</button>
                                 </div>
                             </div>

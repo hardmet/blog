@@ -2,6 +2,8 @@ package ru.breathoffreedom.mvc.user;
 
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -25,6 +27,7 @@ public class User {
     @Column(name = "NICK_NAME")
     private String nickName;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "BIRTHDAY")
     private Date birthday;
 

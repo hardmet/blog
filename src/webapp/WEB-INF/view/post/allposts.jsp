@@ -7,7 +7,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <page:template>
-    <jsp:attribute name="title">Get Inspiration</jsp:attribute>
+    <jsp:attribute name="title">All posts BoF</jsp:attribute>
 
     <jsp:body>
         <header class="intro-header">
@@ -16,7 +16,7 @@
 
         <div class="titles">
             <h1>All posts</h1>
-            <h2 class="subheading"></h2>
+            <h2 class="subheading">for the all time</h2>
         </div>
         <!-- Main Content -->
         <div class="container">

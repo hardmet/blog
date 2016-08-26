@@ -61,7 +61,7 @@
                         <span class="sr-only">Toggle navigation</span>
                         Menu <i class="fa fa-bars"></i>
                     </button>
-                    <a class="navbar-brand" href="index">Get Inspiration</a>
+                    <a class="navbar-brand" href="<c:url value="/index"/>">Breath of freedom</a>
                 </div>
 
                 <!--This is form for searching, need to fix some hard-code
@@ -158,7 +158,7 @@
                             </a>
                         </li>
                     </ul>
-                    <p class="copyright">Copyright &copy; Get Inspiration 2016
+                    <p class="copyright">Copyright &copy; Breath of freedom 2016
                         <br>
                         Images - <a class="footer-buttons" href="https://vk.com/id10052664">Dmitry Azanov</a>
                     </p>

@@ -15,8 +15,8 @@
         </header>
 
         <div class="titles">
-            <h1>Welcome!</h1>
-            <h2 class="subheading">I guess you get inspiration here</h2>
+            <h1>Добро пожаловать!</h1>
+            <h2 class="subheading">Актуально:</h2>
         </div>
         <!-- Main Content -->
         <div class="container">

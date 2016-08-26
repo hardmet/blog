@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import ru.breathoffreedom.mvc.dao.DAOImpl;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.*;
 
 @Controller
@@ -21,6 +22,8 @@ public class PostController {
         this.daoService = daoService;
     }
 
+
+    @RolesAllowed(value={"ROLE_ADMIN"})
     @RequestMapping(value = "/post/send", method = RequestMethod.POST)
     public ModelAndView post(@ModelAttribute("postModel") PostModel postModel) {
         System.out.println("PostController post is called");

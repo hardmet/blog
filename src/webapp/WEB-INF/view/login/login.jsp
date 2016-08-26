@@ -5,6 +5,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="page" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <page:template>
     <jsp:attribute name="title">Sign in</jsp:attribute>
@@ -18,7 +20,7 @@
         <div class="row">
             <security:authorize access="hasAnyRole('ROLE_ADMIN','ROLE_SUPER_USER', 'ROLE_USER')"
                                 var="isUSer"/>
-            <form name="signin" id="signin"  action="j_spring_security_check" method="post" class="form-signin">
+            <form name="signin" id="signin" action="j_spring_security_check" method="post" class="form-signin">
                 <c:if test="${isUSer}">
                     You are signed in as<security:authentication property="principal.username"/></c:if>
                 <c:if test="${not isUSer}">
@@ -28,14 +30,13 @@
 
                     <h2 class="form-signin-heading">Sign in</h2>
 
-                    <label for="inputEmail" class="sr-only"><spring:message code="email" text="Email"/></label>
+                    <label for="inputEmail" class="sr-only"><spring:message text="Email"/></label>
                     <input id="inputEmail" class="form-control" name="j_username"
                            required autofocus
                            type="email" data-validation-required-message="Please enter your e-mail"
                            placeholder="e-mail"/>
 
-                    <label for="inputPassword" class="sr-only"><spring:message code="pass"
-                                                                               text="Password"/></label>
+                    <label for="inputPassword" class="sr-only"><spring:message text="Password"/></label>
                     <input type="password" id="inputPassword" class="form-control" name="j_password"
                            required data-validation-required-message="Please enter your password"
                            placeholder="password"/>
@@ -49,42 +50,34 @@
                     <button type="submit" class="btn btn-default">Sign in</button>
                 </c:if>
             </form>
+            <c:url value="/user/add" var="addUser"/>
             <c:if test="${not isUSer}">
-                <c:url value="/user/add" var="addUser"/>
-                <form name="signup" id="signup" action="${addUser}" method="post"
-                      class="form-signin" modelAttribute="userModel">
-                    <c:if test="${pageContext.request.getParameter('resultReg') == 'true'}">
-                        <h3 style="color:green">Check your e-mail for confirmation!</h3>
+                <form:form name="signup" id="signup" action="${addUser}" method="POST"
+                           class="form-signin" modelAttribute="user">
+                    <c:if test="${pageContext.request.getParameter('status') == '200'}">
+                        <h3 style="color:green">${pageContext.request.getParameter('message')}</h3>
                     </c:if>
-                    <c:if test="${pageContext.request.getParameter('resultReg') == 'false'}">
-                        <h3 style="color:red">User with this e-mail is already registered!</h3>
+                    <c:if test="${pageContext.request.getParameter('status') != '200'}">
+                        <h3 style="color:red">${pageContext.request.getParameter('message')}</h3>
                     </c:if>
                     <h2 class="form-signin-heading">Sign up</h2>
-                    <label for="regEmail" class="sr-only"><spring:message code="email" text="Email"/></label>
-                    <input id="regEmail" class="form-control" name="regEmail" required autofocus
-                           type="email" data-validation-required-message="Please enter your e-mail"
-                           placeholder="e-mail"/>
-
-                    <label for="regPass" class="sr-only"><spring:message code="pass" text="Password"/></label>
-                    <input type="password" id="regPass" class="form-control" name="regPass" required
-                           data-validation-required-message="Please enter your password"
-                           placeholder="password"/>
-                    <label for="regNick" class="sr-only"><spring:message code="nick" text="Nick"/></label>
-                    <input id="regNick" class="form-control" name="regNick" required
-                           data-validation-required-message="Please enter your nick name"
-                           placeholder="nick name"/>
-                    <label for="regFirst" class="sr-only"><spring:message code="first" text="First"/></label>
-                    <input id="regFirst" class="form-control" name="regFirst"
-                           placeholder="first name"/>
-                    <label for="regLast" class="sr-only"><spring:message code="last" text="Last"/></label>
-                    <input id="regLast" class="form-control" name="regLast"
-                           placeholder="last name"/>
-                    <label for="regBirthday" class="sr-only"><spring:message code="birthday"
-                                                                             text="Birthday"/></label>
-                    <input id="regBirthday" class="form-control" name="regBirthday"
-                           placeholder="birthday" type="date"/>
+                    <label for="regEmail" class="sr-only"></label>
+                    <input id="regEmail" class="form-control" name="email" required="" autofocus
+                           type="email" data-validation-required-message="Please enter your e-mail" placeholder="e-mail"/>
+                    <label for="regPass" class="sr-only"></label>
+                    <input type="password" id="regPass" class="form-control" name="password" required=""
+                                data-validation-required-message="Please enter your password" placeholder="password"/>
+                    <label for="regNick" class="sr-only"></label>
+                    <input id="regNick" class="form-control" name="nickName" required=""
+                           data-validation-required-message="Please enter your nick name" placeholder="nick name"/>
+                    <label for="regFirst" class="sr-only"></label>
+                    <input id="regFirst" class="form-control" name="firstName" placeholder="first name"/>
+                    <label for="regLast" class="sr-only"></label>
+                    <input id="regLast" class="form-control" name="lastName" placeholder="last name"/>
+                    <label for="regBirthday" class="sr-only"></label>
+                    <input id="regBirthday" class="form-control" name="birthday" type="date" pattern="yyyy-MM-dd"/>
                     <button type="submit" class="btn btn-default">Sign up</button>
-                </form>
+                </form:form>
             </c:if>
             <hr>
         </div>

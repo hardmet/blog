@@ -7,7 +7,7 @@
 <%@ taglib prefix="page" tagdir="/WEB-INF/tags" %>
 
 <page:template>
-    <jsp:attribute name="title">Create Inspiration</jsp:attribute>
+    <jsp:attribute name="title">Create freem</jsp:attribute>
 
     <jsp:body>
         <!-- Page Header -->

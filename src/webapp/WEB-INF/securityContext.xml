@@ -17,8 +17,8 @@
         <intercept-url pattern="/newpost" access="hasRole('ROLE_ADMIN')"/>
         <!--Если попытаться войти без логина на страницу в этом маппинге (например http://localhost:8080/user/),
         то будет переброшено на страницу, указанную в form-login login-page='pageName.html' -->
-        <intercept-url pattern="/user/**" access="hasAnyRole('ROLE_ADMIN','ROLE_SUPER_USER', 'ROLE_USER')"/>
-        <access-denied-handler error-page="/error403" />
+        <!--<intercept-url pattern="/user/**" access="hasAnyRole('ROLE_ADMIN','ROLE_SUPER_USER', 'ROLE_USER')"/>-->
+        <access-denied-handler error-page="/error403"/>
         <!--login-page="/login.html"-->
         <!--authentication-failure-url="/login.html?error=true"-->
         <form-login login-page="/login"
@@ -42,8 +42,12 @@
         	 FROM AUTHORITIES WHERE USERNAME = ? "/>
 
     <authentication-manager alias="authenticationManager">
-        <authentication-provider user-service-ref="jdbcUserService"/>
+        <authentication-provider user-service-ref="jdbcUserService">
+            <password-encoder ref="bcryptEncoder"/>
+        </authentication-provider>
     </authentication-manager>
 
+    <beans:bean name="bcryptEncoder"
+                class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
 
 </beans:beans>

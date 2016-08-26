@@ -8,7 +8,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <page:template>
-    <jsp:attribute name="title">Sign in</jsp:attribute>
+    <jsp:attribute name="title">Profile</jsp:attribute>
     <jsp:body>
         <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
         <style>
@@ -31,26 +31,25 @@
                   class="form-signin" modelAttribute="userModel">
                 <h2 class="form-signin-heading">Your profile</h2>
                 <span>e-mail: <security:authentication property="principal.username"/></span>
-                <label for="regPass" class="sr-only"><spring:message code="pass" text="Password"/></label>
+                <label for="regPass" class="sr-only"></label>
                 <input type="password" id="regPass" class="form-control" name="regPass" required
                        data-validation-required-message="Please enter your password"
                        placeholder="change password"/>
-                <label for="regPassRet" class="sr-only"><spring:message code="passconfirm" text="Password"/></label>
+                <label for="regPassRet" class="sr-only"></label>
                 <input type="password" id="regPassRet" class="form-control" name="regPassConfirm" required
                        data-validation-required-message="retry your password"
                        placeholder="retry password"/>
-                <label for="regNick" class="sr-only"><spring:message code="nick" text="Nick"/></label>
+                <label for="regNick" class="sr-only"></label>
                 <input id="regNick" class="form-control" name="regNick" required
                        data-validation-required-message="Please enter your nick name"
                        placeholder="nick name" value="${user.nickName}"/>
-                <label for="regFirst" class="sr-only"><spring:message code="first" text="First"/></label>
+                <label for="regFirst" class="sr-only"></label>
                 <input id="regFirst" class="form-control" name="regFirst"
                        placeholder="first name" value="${user.firstName}"/>
-                <label for="regLast" class="sr-only"><spring:message code="last" text="Last"/></label>
+                <label for="regLast" class="sr-only"></label>
                 <input id="regLast" class="form-control" name="regLast"
                        placeholder="last name" value="${user.lastName}"/>
-                <label for="regBirthday" class="sr-only">
-                    <spring:message code="birthday" text="Birthday"/></label>
+                <label for="regBirthday" class="sr-only"></label>
                 <input id="regBirthday" class="form-control" name="regBirthday"
                        type="date" value="${theFormattedDate}"/>
                 <button type="submit" class="btn btn-default">Save</button>

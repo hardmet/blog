@@ -85,12 +85,17 @@ public class DAOImpl implements DAOInterface {
         return typedQuery.getResultList();
     }
 
+    public List queryFindAllUserNames() {
+        System.out.println("ORMService queryfindAllUsers is called");
+        return entityManager.createQuery("SELECT U.email FROM User as U").getResultList();
+    }
+
     @Transactional
     public boolean insertUser(String email, String password, String nick, String firstName,
                               String lastName, Date birthday, String role) {
         System.out.println("ORMService insertUser is called");
         String qlString = "insert into USER " +
-                "(FIRST_NAME,LAST_NAME,NICK_NAME,BIRTHDAY,EMAIL,PASSWORD) values (?,?,?,?,?,?)";
+                "(FIRST_NAME,LAST_NAME,NICK_NAME,BIRTHDAY,EMAIL,PASSWORD,ENABLED) values (?,?,?,?,?,?,?)";
         Query query = entityManager.createNativeQuery(qlString);
         query.setParameter(1, firstName);
         query.setParameter(2, lastName);
@@ -98,11 +103,12 @@ public class DAOImpl implements DAOInterface {
         query.setParameter(4, birthday);
         query.setParameter(5, email);
         query.setParameter(6, password);
+        query.setParameter(7, "1");
         int result = query.executeUpdate();
         if (result < 0) {
             return result > 0;
         } else {
-            qlString = "insert into AUTHORITIES (USERNAME, USERNAME) values (?,?)";
+            qlString = "insert into AUTHORITIES (USERNAME, ACCESS_GROUP) values (?,?)";
             query = entityManager.createNativeQuery(qlString);
             query.setParameter(1, email);
             query.setParameter(2, role);
@@ -145,5 +151,14 @@ public class DAOImpl implements DAOInterface {
                 "from CommentModel as comment where comment.post = ?")
                 .setParameter(1, id)
                 .getResultList();
+    }
+
+    public boolean querySetEnabledUser(String email) {
+        String query = "update user set enabled = ? where email = ?";
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter(1, "TRUE");
+        nativeQuery.setParameter(2, email);
+        int result = nativeQuery.executeUpdate();
+        return result > 0;
     }
 }

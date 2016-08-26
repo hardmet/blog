@@ -1827,8 +1827,7 @@ pre code {
 .container {
     padding-right: 15px;
     padding-left: 15px;
-    margin-right: auto;
-    margin-left: auto;
+    margin: 0 auto;
 }
 
 @media (min-width: 768px) {
@@ -2716,7 +2715,7 @@ pre code {
     padding-left: 15px;
     padding-right: 15px;
     padding-top: 15px;
-    width: 960px;
+    width: 84%;
     margin-right: auto;
     margin-left: auto;
 }
@@ -6334,7 +6333,7 @@ button.close {
 
 .modal-content {
     position: relative;
-    width: 960px;
+    width: 84%;
     margin: 0 auto;
     background-color: #F2F7F7;
     -webkit-background-clip: padding-box;
