@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -50,10 +48,10 @@
                     <button type="submit" class="btn btn-default">Sign in</button>
                 </c:if>
             </form>
-            <c:url value="/user/add" var="addUser"/>
+            <c:url value="/userModel/add" var="addUser"/>
             <c:if test="${not isUSer}">
                 <form:form name="signup" id="signup" action="${addUser}" method="POST"
-                           class="form-signin" modelAttribute="user">
+                           class="form-signin" modelAttribute="userModel">
                     <c:if test="${pageContext.request.getParameter('status') == '200'}">
                         <h3 style="color:green">${pageContext.request.getParameter('message')}</h3>
                     </c:if>

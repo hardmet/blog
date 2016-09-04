@@ -15,9 +15,9 @@
         and to configure how they should be handled. It is used to construct the
         FilterInvocationSecurityMetadataSource used by the FilterSecurityInterceptor-->
         <intercept-url pattern="/newpost" access="hasRole('ROLE_ADMIN')"/>
-        <!--Если попытаться войти без логина на страницу в этом маппинге (например http://localhost:8080/user/),
+        <!--Если попытаться войти без логина на страницу в этом маппинге (например http://localhost:8080/userModel/),
         то будет переброшено на страницу, указанную в form-login login-page='pageName.html' -->
-        <!--<intercept-url pattern="/user/**" access="hasAnyRole('ROLE_ADMIN','ROLE_SUPER_USER', 'ROLE_USER')"/>-->
+        <!--<intercept-url pattern="/userModel/**" access="hasAnyRole('ROLE_ADMIN','ROLE_SUPER_USER', 'ROLE_USER')"/>-->
         <access-denied-handler error-page="/error403"/>
         <!--login-page="/login.html"-->
         <!--authentication-failure-url="/login.html?error=true"-->
@@ -29,7 +29,7 @@
         />
 
         <logout logout-url="/j_spring_security_logout" logout-success-url="/"/>
-        <!--Save logged user in cookie with name key='name' -->
+        <!--Save logged userModel in cookie with name key='name' -->
         <remember-me key="myKey" token-validity-seconds="600"/>
 
         <csrf disabled="true"/>

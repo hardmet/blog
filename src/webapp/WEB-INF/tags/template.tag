@@ -77,7 +77,7 @@
                             </div>
                         </div>
                     </form>
-                    --!>
+                    -->
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -106,7 +106,7 @@
                             <li>
                                 <a href="<c:url value="/j_spring_security_logout"/>">Sign out</a>
                                 <ul class="submenu">
-                                    <li><a href="<c:url value="/user/edit"/>">Profile</a></li>
+                                    <li><a href="<c:url value="/userModel/edit"/>">Profile</a></li>
                                 </ul>
                             </li>
                         </c:if>

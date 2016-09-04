@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -19,9 +17,9 @@
         </header>
 
         <div class="titles">
-            <c:if test="${!empty data}">
-                <h1>${data.post.title}</h1>
-                <h2 class="subheading">${data.post.subtitle}</h2>
+            <c:if test="${!empty postAndComments}">
+                <h1>${postAndComments.post.title}</h1>
+                <h2 class="subheading">${postAndComments.post.subtitle}</h2>
             </c:if>
         </div>
 
@@ -30,20 +28,20 @@
             <div class="container">
                 <div class="row">
                     <div class="main-content">
-                        <c:if test="${!empty data.post}">
-                            <span>${data.post.text}</span>
+                        <c:if test="${!empty postAndComments.post}">
+                            <span>${postAndComments.post.text}</span>
                             <span class="meta post-time">Posted by
-                                    <a href="#">${data.post.author}</a>
+                                    <a href="#">${postAndComments.post.author}</a>
                                     on <fmt:formatDate type="date" dateStyle="long" pattern="MMMM dd, yyyy"
-                                                       value="${data.post.date}"/></span>
+                                                       value="${postAndComments.post.date}"/></span>
                         </c:if>
                     </div>
                     <div class="modal-content">
                         <h4>Comments:</h4>
 
-                        <c:if test="${!empty data.comments}">
-                            <c:forEach items="${data.comments}" var="comment">
-                                <div class="comment-content">
+                        <c:if test="${!empty postAndComments.comments}">
+                            <c:forEach items="${postAndComments.comments}" var="comment">
+                                <div class="comment-content" id="comment_${comment.id}">
                                         <span class="comment-head"><a href="#">${comment.author}</a>
                                             <span class="comment-time">
                                                 <fmt:formatDate type="date" dateStyle="long"
@@ -54,15 +52,15 @@
                                 </div>
                             </c:forEach>
                         </c:if>
-                        <c:if test="${pageContext.request.getParameter('resultAdd') == 'true'}">
+                        <c:if test="${pageContext.request.getParameter('resultOfAdd') == 'true'}">
                             <h3 style="color:green">Comment added!</h3>
                         </c:if>
 
-                        <c:if test="${pageContext.request.getParameter('resultAdd') == 'false'}">
+                        <c:if test="${pageContext.request.getParameter('resultOfAdd') == 'false'}">
                             <h3 style="color:red">Something wrong, comment didn't add!</h3>
                         </c:if>
 
-                        <c:url value="/post/${data.post.id}/comment/add" var="send"/>
+                        <c:url value="/post/${postAndComments.post.id}/comment/add" var="send"/>
 
                         <form:form name="sentComment" id="contactForm" action="${send}"
                                    method="post" modelAttribute="commentModel">

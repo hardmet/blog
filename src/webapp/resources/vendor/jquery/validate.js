@@ -64,6 +64,7 @@ $(document).ready(function () {
         }
 
     });
+
     $(".post-preview > a").hover(
         function () {
             $( this ).parent().css( 'background','#FFF7CC' );

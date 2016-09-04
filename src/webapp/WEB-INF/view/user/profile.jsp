@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -21,10 +19,10 @@
         <!-- Content Row -->
         <div class="row">
             <c:url value="/user/save" var="editProfile"/>
-            <c:if test="${pageContext.request.getParameter('resultReg') == 'true'}">
+            <c:if test="${pageContext.request.getParameter('resultOfChangingProfile') == 'true'}">
                 <h3 style="color:green">Profile has been update!</h3>
             </c:if>
-            <c:if test="${pageContext.request.getParameter('resultReg') == 'false'}">
+            <c:if test="${pageContext.request.getParameter('resultOfChangingProfile') == 'false'}">
                 <h3 style="color:red">Profile hasn't been update!</h3>
             </c:if>
             <form name="editForm" id="editForm" action="${editProfile}" method="post"

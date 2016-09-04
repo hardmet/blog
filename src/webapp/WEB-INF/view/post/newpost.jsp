@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -25,10 +23,10 @@
         <div class="container">
             <!-- Page Heading/Breadcrumbs -->
             <div class="row">
-                <c:if test="${pageContext.request.getParameter('resultSending') == 'true'}">
+                <c:if test="${pageContext.request.getParameter('resultAdding') == 'true'}">
                     <h3 style="color:green">New post has been created!</h3>
                 </c:if>
-                <c:if test="${pageContext.request.getParameter('resultSending') == 'false'}">
+                <c:if test="${pageContext.request.getParameter('resultAdding') == 'false'}">
                     <h3 style="color:red">New post hasn't been created! Smth. wrong!</h3>
                 </c:if>
                 <div class="main-content">
@@ -40,7 +38,7 @@
                         </li>
                         <li class="active">Create post</li>
                     </ol>
-                    <c:url value="/post/send" var="send"/>
+                    <c:url value="/post/add" var="send"/>
                     <c:url value="/uploadImage" var="imageUploadControllerURL" />
                     <!-- Contact Form -->
                     <!-- In order to set the email address and subject line for the contact form go to the bin/contact_me.php file. -->
