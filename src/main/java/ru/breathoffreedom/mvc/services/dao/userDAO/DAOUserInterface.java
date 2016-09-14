@@ -27,4 +27,6 @@ public interface DAOUserInterface {
 
     boolean setEnabledUser(String email);
 
+    boolean deleteUserById(int userId);
+
 }

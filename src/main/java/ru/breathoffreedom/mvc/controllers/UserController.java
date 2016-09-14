@@ -1,11 +1,14 @@
 package ru.breathoffreedom.mvc.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,15 +35,15 @@ public class UserController {
         this.daoUserService = daoUserService;
     }
 
-    @RequestMapping(value = "/user/add", method = RequestMethod.POST)
-    public String addUser(@ModelAttribute("userModel") UserModel userModel, ModelMap model) {
-        System.out.println("UserController addUser is called");
+    @MessageMapping("/check/{sessionId}")
+    @SendTo("/service/registration/result/{sessionId}")
+    public HttpStatus addUser(UserModel userModel, @DestinationVariable("sessionId") String sessionId) {
+        System.out.println("UserController resultOfRegistration is called");
         String email = userModel.getEmail();
         String nick = userModel.getNickName();
         if (daoUserService.findAllUserNames().contains(email)
                 || daoUserService.findAllNicks().contains(nick)) {
-            model.addAttribute("status", "400");
-            model.addAttribute("message", "User with this email or nick name is already exist!");
+            return HttpStatus.CONFLICT;
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             String password = encoder.encode(userModel.getPassword());
@@ -51,14 +54,11 @@ public class UserController {
             boolean resultInsert = daoUserService.insertUser(email, password, nick,
                     firstName, lastName, birthday, role);
             if (resultInsert) {
-                model.addAttribute("status","200");
-                model.addAttribute("message", "Register successful, now you can sign in!");
+                return HttpStatus.OK;
             } else {
-                model.addAttribute("status", "400");
-                model.addAttribute("message", "Wrong data, please try another!");
+                return HttpStatus.UNAUTHORIZED;
             }
         }
-        return "redirect:/login";
     }
 
     /**

@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +13,6 @@ import ru.breathoffreedom.mvc.models.CommentModel;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 import java.util.List;
 
@@ -23,17 +23,19 @@ import java.util.List;
  * annotated method contains insert/update query for return DB to start state.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:applicationContext.xml")
+@ContextConfiguration(locations = {"classpath:dispatcher-servlet.xml", "classpath:applicationContext.xml"})
 public class DAOCommentImplTest {
 
     @PersistenceContext(name = "dataSource")
     private EntityManager entityManager;
 
-    private int commentId;
+    @Autowired
+    private DAOCommentInterface daoCommentService;
+
     private String author;
     private String text;
     private int postId;
-    private int numberOfComments;
+    private int numberOfLastComment;
     private String anotherText;
 
     @Before
@@ -42,8 +44,7 @@ public class DAOCommentImplTest {
         text = "My first post!";
         postId = 1;
         anotherText = "New Text";
-        commentId = 1;
-        numberOfComments = getNumberOfComments();
+        numberOfLastComment = getNumberOfLastComment();
     }
 
     @After
@@ -55,45 +56,40 @@ public class DAOCommentImplTest {
 
         String query = "ALTER TABLE comment AUTO_INCREMENT = ?";
         Query nativeQuery = entityManager.createNativeQuery(query);
-        nativeQuery.setParameter(1, numberOfComments);
+        nativeQuery.setParameter(1, numberOfLastComment);
         nativeQuery.executeUpdate();
 
-        numberOfComments = 0;
+        numberOfLastComment = 0;
     }
 
     /**
      * This method for count current number of comments in Table Comment
      * @return - current number of comments at the table
      */
-    public int getNumberOfComments() {
-        String query = "from CommentModel";
-        TypedQuery<CommentModel> typedQuery = entityManager.createQuery(query, CommentModel.class);
-        return typedQuery.getResultList().size();
+    public int getNumberOfLastComment() {
+        List comments = entityManager.createQuery("from CommentModel order by id desc")
+                .getResultList();
+        return ((CommentModel) comments.get(0)).getId();
     }
 
     @Transactional
     @Test
-    public void insertComment() throws Exception {
+    public void insertAndDeleteCommentTest() throws Exception {
         System.out.println("Test insertComment start");
-        CommentModel comment = new CommentModel(author, anotherText, postId);
-        entityManager.persist(comment);
-        CommentModel createdComment = entityManager.find(CommentModel.class, comment.getId());
+        CommentModel createdComment = daoCommentService.insertComment(author, anotherText, postId);
+        int commentId = createdComment.getId();
         assert (createdComment.getAuthor().equals(author));
         assert (createdComment.getText().equals(anotherText));
-        assert (comment.getId() != 0);
-        assert ((numberOfComments + 1) == getNumberOfComments());
-        entityManager.remove(comment);
-        entityManager.flush();
+        assert (commentId != 0);
+        assert ((numberOfLastComment + 1) == getNumberOfLastComment());
+        assert daoCommentService.deleteComment(commentId);
     }
 
     @Transactional
     @Test
-    public void findCommentsByPostId() throws Exception {
+    public void findCommentsByPostIdTest() throws Exception {
         System.out.println("Test findCommentsByPostId start");
-        List commentsToPost = entityManager.createQuery(
-                "from CommentModel as comment where comment.post = ?")
-                .setParameter(1, postId)
-                .getResultList();
+        List commentsToPost = daoCommentService.findCommentsByPostId(postId);
         assert commentsToPost.size() != 0;
         for (Object comment : commentsToPost) {
             System.out.print("Comment id is: " + ((CommentModel)comment).getId() + "\t");
@@ -103,29 +99,12 @@ public class DAOCommentImplTest {
 
     @Transactional
     @Test
-    public void updateComment() throws Exception {
+    public void updateCommentTest() throws Exception {
         System.out.println("Test updateComment start");
-        CommentModel updatedComment = entityManager.find(CommentModel.class, commentId);
-        updatedComment.setText(anotherText);
-        updatedComment = entityManager.find(CommentModel.class, commentId);
-        entityManager.flush();
-        assert updatedComment.getText().equals(anotherText);
-        updatedComment.setText(text);
-        entityManager.persist(updatedComment);
-        entityManager.flush();
+        CommentModel commentForTest = daoCommentService.insertComment(author, text, postId);
+        int testId = commentForTest.getId();
+        assert daoCommentService.updateComment(testId, anotherText);
+        assert daoCommentService.updateComment(testId, text);
+        assert daoCommentService.deleteComment(testId);
     }
-
-    @Transactional
-    @Test
-    public void deleteComment() throws Exception {
-        System.out.println("Test deleteComment start");
-        CommentModel commentToRemove = new CommentModel(author, text, postId);
-        entityManager.persist(commentToRemove);
-        entityManager.flush();
-        entityManager.remove(commentToRemove);
-        entityManager.flush();
-        assert entityManager.find(CommentModel.class, numberOfComments+1) == null;
-        assert ((numberOfComments) == getNumberOfComments());
-    }
-
 }

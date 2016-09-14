@@ -2,17 +2,27 @@ package ru.breathoffreedom.mvc.controllers;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import ru.breathoffreedom.mvc.models.CommentModel;
 import ru.breathoffreedom.mvc.services.dao.commentDAO.DAOCommentInterface;
 import ru.breathoffreedom.mvc.services.dao.userDAO.DAOUserInterface;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.security.Principal;
+
 
 /**
  * This class is controller in Spring MVC, it controls operations with Comments.
@@ -39,23 +49,34 @@ public class CommentController {
      * @param postId - it's a id of post that calls add comment method
      * @return - the page of post with added new comment
      */
-    @RequestMapping(value = "/post/{postId}/comment/add", method = RequestMethod.POST)
-    public ModelAndView addComment(@ModelAttribute("commentModel") CommentModel comment,
-                                   @PathVariable("postId") int postId) {
+    @MessageMapping("/commentToPost/{postId}")
+    @SendTo("/service/add/{postId}")
+    public CommentModel addComment(CommentModel comment, @DestinationVariable("postId") int postId) {
         System.out.println("CommentController addComment is called");
+        String email = comment.getAuthor();
         String author;
-        if (SecurityContextHolder.getContext().getAuthentication() != null &&
-                SecurityContextHolder.getContext().getAuthentication().isAuthenticated() &&
-                //when Anonymous Authentication is enabled
-                !(SecurityContextHolder.getContext().getAuthentication()
-                        instanceof AnonymousAuthenticationToken)) {
-            String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-            author = daoUserService.findUserByEmail(userEmail).getNickName();
+        if (!email.equals("")) {
+            author = daoUserService.findUserByEmail(email).getNickName();
         } else {
             author = "Guest";
         }
         String text = comment.getText();
-        boolean resultOfAddComent = daoCommentService.insertComment(author, text, postId);
-        return new ModelAndView("redirect:/post/"+postId, "resultOfAdd", resultOfAddComent);
+        CommentModel addedComment = daoCommentService.insertComment(author, text, postId);
+        if (addedComment.getId() == 0 ) {
+            return null;
+        }
+        return addedComment;
+    }
+
+    /**
+     * deleting the comment from the post
+     * @param commentId - id which contained in the path of MessageMapping
+     * @return - result of deleting
+     */
+    @MessageMapping("/commentToDelete/{commentId}")
+    @SendTo("/comment/delete/{commentId}")
+    public boolean deleteComment(@DestinationVariable("commentId") int commentId) {
+        System.out.println("CommentController deleteComment is called");
+        return daoCommentService.deleteComment(commentId);
     }
 }

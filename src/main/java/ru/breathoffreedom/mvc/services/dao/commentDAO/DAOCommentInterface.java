@@ -1,5 +1,7 @@
 package ru.breathoffreedom.mvc.services.dao.commentDAO;
 
+import ru.breathoffreedom.mvc.models.CommentModel;
+
 import java.util.List;
 
 /**
@@ -8,7 +10,9 @@ import java.util.List;
 
 public interface DAOCommentInterface {
 
-    boolean insertComment(String author, String text, int postId);
+    CommentModel findCommentById(int commentId);
+
+    CommentModel insertComment(String author, String text, int postId);
 
     List findCommentsByPostId(int id);
 

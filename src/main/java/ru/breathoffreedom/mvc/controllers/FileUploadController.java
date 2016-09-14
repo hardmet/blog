@@ -1,15 +1,17 @@
 package ru.breathoffreedom.mvc.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.breathoffreedom.mvc.services.vfs.VFS;
 
+import javax.annotation.security.RolesAllowed;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class for control operations with files
@@ -17,39 +19,54 @@ import java.io.FileOutputStream;
 @Controller
 public class FileUploadController {
 
+    private final VFS fileSystem;
+
+    @Autowired
+    public FileUploadController(VFS fileSystem) {
+        this.fileSystem = fileSystem;
+    }
+
     /**
      * method for upload file to the server
-     * @param file - file to upload
-     * @return - result message of upload file
+     * @param uploadImage - file to upload
+     * @param directory   - directory - destination to save files
+     * @return - result messages of uploading uploadImages
      */
+    @RolesAllowed(value={"ROLE_ADMIN"})
     @RequestMapping(value = "/uploadImage", method = RequestMethod.POST)
-    public @ResponseBody
-    String handleFileUpload(@RequestParam("file") MultipartFile file) {
-
-        if (!file.isEmpty()) {
-            try {
-
-                byte[] fileBytes = file.getBytes();
-                String rootPath = System.getProperty("catalina.home");
-                System.out.println("Server rootPath: " + rootPath);
-                System.out.println("File original name: " + file.getOriginalFilename());
-                System.out.println("File content type: " + file.getContentType());
-
-                File newFile = new File(rootPath + File.separator + "blog" +
-                        File.separator + file.getOriginalFilename());
-                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(newFile));
-                stream.write(fileBytes);
-                stream.close();
-
-                System.out.println("File is saved under: " + rootPath + File.separator + file.getOriginalFilename());
-                return "File is saved under: " + rootPath + File.separator + file.getOriginalFilename();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return "File upload is failed: " + e.getMessage();
+    @ResponseBody
+    public List<String> handleFileUpload(@RequestParam("uploadImages") MultipartFile[] uploadImage,
+                                         @RequestParam("directory") String directory) {
+        System.out.println("handleFileUpload is called");
+        List<String> resultOfUpload = new ArrayList<>();
+        for (MultipartFile file : uploadImage) {
+            if (!file.isEmpty()) {
+                try {
+                    byte[] fileBytes = file.getBytes();
+                    String rootPath = fileSystem.getRoot();
+                    System.out.println("Server rootPath: " + rootPath);
+                    System.out.println("File original name: " + file.getOriginalFilename());
+                    System.out.println("File content type: " + file.getContentType());
+                    StringBuilder fileName = new StringBuilder(rootPath);
+                    fileName.append(File.separator);
+                    fileName.append(fileSystem.getDirectory("post" + File.separator + directory));
+                    fileName.append(File.separator);
+                    fileName.append(file.getOriginalFilename());
+                    System.out.println(fileName);
+                    File newFile = new File(fileName.toString());
+                    BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(newFile));
+                    stream.write(fileBytes);
+                    stream.close();
+                    fileName.insert(0, "File is saved under: ");
+                    resultOfUpload.add(fileName.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    resultOfUpload.add("File upload is failed: " + e.getMessage());
+                }
+            } else {
+                resultOfUpload.add("File: " + file.getOriginalFilename() + " upload is failed: File is empty");
             }
-        } else {
-            return "File upload is failed: File is empty";
         }
+        return resultOfUpload;
     }
 }

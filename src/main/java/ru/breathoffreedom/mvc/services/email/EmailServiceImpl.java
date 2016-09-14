@@ -34,7 +34,7 @@ public class EmailServiceImpl implements EmailServiceInterface {
     private final VelocityEngine velocityEngine; //see applicationContext.xml
 
     /**
-     * @param mailSender - needed for send email
+     * @param mailSender     - needed for send email
      * @param velocityEngine - needed for using velocity templates
      */
     @Autowired
@@ -46,10 +46,10 @@ public class EmailServiceImpl implements EmailServiceInterface {
     /**
      * this method sends email
      * @param templateName - name of velocity template to construct the message
-     * @param model - model from contact form contains field from, text, author, etc.
+     * @param model        - model from contact form contains field from, text, author, etc.
      * @return - result of sending email
      */
-    public boolean sendEmail (final String templateName, final Map<String, Object> model) {
+    public boolean sendEmail(final String templateName, final Map<String, Object> model) {
         boolean res = false;
         try {
             MimeMessagePreparator preparator = mimeMessage -> {
@@ -73,7 +73,7 @@ public class EmailServiceImpl implements EmailServiceInterface {
                 String text = VelocityEngineUtils.mergeTemplateIntoString(
                         velocityEngine, templateName, "UTF-8", model);
 
-                message.setText(text,true);
+                message.setText(text, true);
             };
 
             mailSender.send(preparator);

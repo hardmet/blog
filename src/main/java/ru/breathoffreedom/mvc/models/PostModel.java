@@ -3,9 +3,8 @@ package ru.breathoffreedom.mvc.models;
 
 import java.util.Date;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -17,7 +16,7 @@ public class PostModel {
     @Column(name = "ID")
     private int id;
 
-    @NotEmpty
+    @NotNull
     @Size(min = 5, max = 20)
     @Column(name = "AUTHOR")
     private String author;
@@ -25,17 +24,17 @@ public class PostModel {
     @Column(name = "POST_DATE")
     private Date date;
 
-    @NotEmpty
+    @NotNull
     @Size(min = 1, max = 30)
     @Column(name = "TITLE")
     private String title;
 
-    @NotEmpty
+    @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "SUBTITLE")
     private String subtitle;
 
-    @NotEmpty
+    @NotNull
     @Size(min = 5, max = 10000)
     @Column(name = "TEXT")
     private String text;

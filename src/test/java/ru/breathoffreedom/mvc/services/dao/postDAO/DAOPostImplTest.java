@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +13,6 @@ import ru.breathoffreedom.mvc.models.PostModel;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 import java.util.List;
 
@@ -23,11 +23,14 @@ import java.util.List;
  * annotated method contains insert/update query for return DB to start state.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:applicationContext.xml")
+@ContextConfiguration(locations = {"classpath:dispatcher-servlet.xml", "classpath:applicationContext.xml"})
 public class DAOPostImplTest {
 
     @PersistenceContext(name = "dataSource")
     private EntityManager entityManager;
+
+    @Autowired
+    private DAOPostInterface daoPostService;
 
     private String author;
     private String title;
@@ -46,7 +49,7 @@ public class DAOPostImplTest {
         subtitle = "SUBTITLE";
         text = "My first post!";
         postId = 1;
-        numberOfPosts =  entityManager.createQuery("from PostModel",
+        numberOfPosts = entityManager.createQuery("from PostModel",
                 PostModel.class).getResultList().size();
         anotherTitle = "New Title";
         anotherSubtitle = "New SubTitle";
@@ -72,11 +75,9 @@ public class DAOPostImplTest {
 
     @Transactional
     @Test
-    public void findAllPosts() throws Exception {
+    public void findAllPostsTest() throws Exception {
         System.out.println("Test findAllPosts start");
-        String query = "from PostModel order by id desc";
-        TypedQuery<PostModel> typedQuery = entityManager.createQuery(query, PostModel.class);
-        List<PostModel> allPostsList = typedQuery.getResultList();
+        List<PostModel> allPostsList = daoPostService.findAllPosts();
         assert (allPostsList.size() == numberOfPosts);
         for (int i = 0; i < allPostsList.size(); i++) {
             if (i % 6 == 0) {
@@ -88,68 +89,47 @@ public class DAOPostImplTest {
 
     @Transactional
     @Test
-    public void findPostById() throws Exception {
-        System.out.println("Test findPostById start");
-        PostModel testPost = entityManager.find(PostModel.class, postId);
-        if (testPost != null) {
-            assert (testPost.getAuthor().equals(author));
-            assert (testPost.getTitle().equals(title));
-            assert (testPost.getSubtitle().equals(subtitle));
-            assert (testPost.getId() == (postId));
-            assert (testPost.getText().equals(text));
-        } else {
-            System.out.println("testPost is null!");
-        }
+    public void findPostByIdTest() throws Exception {
+        System.out.println("Test getPostById start");
+        int id = daoPostService.insertPost(author, title, subtitle, text);
+        PostModel testPost = daoPostService.findPostById(id);
+        assert testPost != null;
+        assert (testPost.getAuthor().equals(author));
+        assert (testPost.getTitle().equals(title));
+        assert (testPost.getSubtitle().equals(subtitle));
+        assert (testPost.getId() == id);
+        assert (testPost.getText().equals(text));
+        assert daoPostService.deletePost(id);
     }
 
     @Transactional
     @Test
-    public void updatePostAndCheckResult() throws Exception {
+    public void updatePostTest() throws Exception {
         System.out.println("Test updatePostAndCheckResult start");
-        PostModel testPost = entityManager.find(PostModel.class, postId);
-        testPost.setTitle(anotherTitle);
-        testPost.setSubtitle(anotherSubtitle);
-        testPost.setText(anotherText);
-        entityManager.persist(testPost);
-        entityManager.flush();
-        PostModel changedPost = entityManager.find(PostModel.class, postId);
+        PostModel testPost = daoPostService.findPostById(postId);
+        String startPostTitle = testPost.getTitle();
+        String startPostSubtitle = testPost.getSubtitle();
+        String startPostText = testPost.getText();
+        assert daoPostService.updatePost(postId, anotherTitle, anotherSubtitle,anotherText);
+        PostModel changedPost = daoPostService.findPostById(postId);
         assert (changedPost.getTitle().equals(anotherTitle));
         assert (changedPost.getSubtitle().equals(anotherSubtitle));
         assert (changedPost.getText().equals(anotherText));
-        testPost.setTitle(title);
-        testPost.setSubtitle(subtitle);
-        testPost.setText(text);
-        entityManager.persist(testPost);
-        entityManager.flush();
+        assert daoPostService.updatePost(postId, startPostTitle, startPostSubtitle,startPostText);
     }
 
     @Transactional
     @Test
-    public void insertPost() throws Exception {
+    public void insertAndDeletePostTest() throws Exception {
         System.out.println("Test insertPost start");
-        PostModel post = new PostModel(author, anotherTitle, anotherSubtitle, anotherText);
-        entityManager.persist(post);
-        PostModel createdPost = entityManager.find(PostModel.class, post.getId());
+        int insertedPostId = daoPostService.insertPost(author, anotherTitle, anotherSubtitle, anotherText);
+        PostModel createdPost = daoPostService.findPostById(insertedPostId);
         assert (createdPost.getAuthor().equals(author));
         assert (createdPost.getTitle().equals(anotherTitle));
         assert (createdPost.getSubtitle().equals(anotherSubtitle));
         assert (createdPost.getText().equals(anotherText));
-        assert (post.getId() != 0);
-        entityManager.remove(post);
-        entityManager.flush();
-    }
-
-    @Transactional
-    @Test
-    public void deletePost() throws Exception {
-        System.out.println("Test deletePost start");
-        PostModel postForRemove = new PostModel(author, anotherTitle, anotherSubtitle, anotherText);
-        entityManager.persist(postForRemove);
-        entityManager.flush();
-        PostModel postToRemove = entityManager.find(PostModel.class, numberOfPosts+1);
-        entityManager.remove(postToRemove);
-        entityManager.flush();
-        assert entityManager.find(PostModel.class, numberOfPosts + 1) == null;
+        assert daoPostService.deletePost(insertedPostId);
+        assert daoPostService.findPostById(insertedPostId) == null;
     }
 
 }

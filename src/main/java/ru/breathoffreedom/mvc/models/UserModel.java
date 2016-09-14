@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
@@ -22,7 +23,7 @@ public class UserModel {
     @Column(name = "LAST_NAME")
     private String lastName;
 
-    @NotEmpty
+    @NotNull
     @Column(name = "NICK_NAME")
     private String nickName;
 
@@ -30,14 +31,14 @@ public class UserModel {
     @Column(name = "BIRTHDAY")
     private Date birthday;
 
-    @NotEmpty
+    @NotNull
     @Column(name = "EMAIL")
     private String email;
 
     @Column(name = "PASSWORD")
     private String password;
 
-    @NotEmpty
+    @NotNull
     @Column(name = "ENABLED")
     private  boolean enabled;
 

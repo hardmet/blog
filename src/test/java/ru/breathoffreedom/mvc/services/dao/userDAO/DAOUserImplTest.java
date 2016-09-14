@@ -4,15 +4,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import ru.breathoffreedom.mvc.models.UserModel;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,42 +22,27 @@ import java.util.Locale;
  * annotated methods contains insert/update query for return DB to start state.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:applicationContext.xml")
+@ContextConfiguration(locations = {"classpath:dispatcher-servlet.xml", "classpath:applicationContext.xml"})
 public class DAOUserImplTest {
 
-    @PersistenceContext(name = "dataSource")
-    private EntityManager entityManager;
+    @Autowired
+    private DAOUserInterface daoUserService;
 
     private int userId;
-    private String firstName;
-    private String lastName;
-    private String nickName;
-    private Date birthday;
     private String email;
-    private String password;
-    private boolean enabled;
-
-    private int numberOfUsers;
-
     private String anotherFirstName;
     private String anotherLastName;
     private String anotherNickName;
     private Date anotherBirthday;
     private String anotherEmail;
     private String anotherPassword;
-    private boolean anotherEnabled;
+    private String anotherRole;
 
     @Before
     public void setUp() throws Exception {
         userId = 1;
-        firstName = "admin";
-        lastName = "super";
-        nickName = "Admin";
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.UK);
-        birthday = formatter.parse("3-Sep-2016 21:35:07");
         email = "admin@gmail.com";
-        password = "12345";
-        enabled = true;
 
         anotherNickName = "The Murder";
         anotherFirstName = "Angry";
@@ -69,188 +50,121 @@ public class DAOUserImplTest {
         anotherBirthday = formatter.parse("25-Oct-1996 02:23:52");
         anotherEmail = "dirty@rts.com";
         anotherPassword = "qwerty";
-        anotherEnabled = false;
-
-        numberOfUsers = getNumberOfUsers();
+        anotherRole = "ROLE_USER";
     }
 
     @After
     public void tearDown() throws Exception {
         userId = 0;
-        firstName = null;
-        lastName = null;
-        nickName = null;
-        birthday = null;
         email = null;
-        password = null;
-        enabled = false;
-
         anotherNickName = null;
         anotherFirstName = null;
         anotherLastName = null;
         anotherBirthday = null;
         anotherEmail = null;
         anotherPassword = null;
-        anotherEnabled = false;
-
-        String query = "ALTER TABLE user AUTO_INCREMENT = ?";
-        Query nativeQuery = entityManager.createNativeQuery(query);
-        nativeQuery.setParameter(1, numberOfUsers);
-        nativeQuery.executeUpdate();
-
-        numberOfUsers = 0;
+        anotherRole = null;
     }
 
-    @Transactional
     @Test
-    public void findUserById() throws Exception {
-        System.out.println("Test findUserById start");
-        UserModel user = entityManager.find(UserModel.class, userId);
+    public void findUserByIdTest() throws Exception {
+        System.out.println("Test findUserByIdTest start");
+        UserModel user = daoUserService.findUserById(userId);
         checkUser(user);
     }
 
-    @Transactional
     @Test
-    public void findUserByEmail() throws Exception {
-        System.out.println("Test findUserByEmail start");
-        UserModel user = (UserModel) entityManager.createQuery(
-                "from UserModel as user where user.email = ?")
-                .setParameter(1, email)
-                .getSingleResult();
+    public void findUserByEmailTest() throws Exception {
+        System.out.println("Test findUserByEmailTest start");
+        UserModel user = daoUserService.findUserByEmail(email);
         checkUser(user);
     }
 
-    @Transactional
     @Test
-    public void findAllUsers() throws Exception {
-        System.out.println("Test findAllUsers start");
-        String query = "from UserModel order by id desc";
-        TypedQuery<UserModel> typedQuery = entityManager.createQuery(query, UserModel.class);
-        List allUsers = typedQuery.getResultList();
+    public void findAllUsersTest() throws Exception {
+        System.out.println("Test findAllUsersTest start");
+        List allUsers = daoUserService.findAllUsers();
         assert allUsers != null;
         assert allUsers.size() != 0;
         for (Object user : allUsers) {
-            System.out.println(((UserModel) user).getNickName() + "\t" +
-                    ((UserModel) user).getFirstName() + "\t" +
-                    ((UserModel) user).getLastName() + "\t" +
-                    ((UserModel) user).getBirthday() + "\t" +
-                    ((UserModel) user).getEmail() + "\t" +
-                    ((UserModel) user).getPassword());
+            checkUser((UserModel) user);
+            System.out.println(user.toString());
         }
     }
 
-    @Transactional
     @Test
-    public void findAllUserNames() throws Exception {
-        System.out.println("Test findAllUserNames start");
-        List allUsers = entityManager.createQuery("SELECT U.email FROM UserModel as U").getResultList();
+    public void findAllUserNamesTest() throws Exception {
+        System.out.println("Test findAllUserNamesTest start");
+        List allUsers = daoUserService.findAllUserNames();
         assert allUsers != null;
         assert allUsers.size() != 0;
-        for (int i = 0; i < allUsers.size(); i++) {
-            if (i % 6 == 0) {
-                System.out.println();
-            }
-            System.out.print(allUsers.get(i) + "\t");
-        }
+        checkAllResultList(allUsers);
     }
 
-    @Transactional
     @Test
-    public void findAllNicks() {
-        List allNicks = entityManager.createQuery("SELECT U.nickName FROM UserModel as U").getResultList();
+    public void findAllNicksTest() {
+        List allNicks = daoUserService.findAllNicks();
         assert allNicks != null;
         assert allNicks.size() != 0;
-        for (int i = 0; i < allNicks.size(); i++) {
-            if (i % 6 == 0) {
-                System.out.println();
-            }
-            System.out.print(allNicks.get(i) + "\t");
-        }
+        checkAllResultList(allNicks);
     }
 
     @Transactional
     @Test
-    public void insertUser() throws Exception {
-        System.out.println("Test insertUser start");
-        UserModel userToInsert = new UserModel(anotherFirstName, anotherLastName,
-                anotherNickName, anotherBirthday, anotherEmail, anotherPassword, anotherEnabled);
-        entityManager.persist(userToInsert);
-        String qlString = "insert into AUTHORITIES (USERNAME, ACCESS_GROUP) values (?,?)";
-        Query query = entityManager.createNativeQuery(qlString);
-        query.setParameter(1, anotherEmail);
-        query.setParameter(2, "ROLE_USER");
-        int result = query.executeUpdate();
-        assert result > 0;
-        assert userToInsert.getId() != 0;
-        assert numberOfUsers + 1 == getNumberOfUsers();
-        qlString = "delete from AUTHORITIES where USERNAME = ?";
-        query = entityManager.createNativeQuery(qlString);
-        query.setParameter(1, anotherEmail);
-        query.executeUpdate();
-        entityManager.remove(userToInsert);
-        entityManager.flush();
+    public void insertAndDeleteUserTest() throws Exception {
+        System.out.println("Test insertUserTest start");
+        assert  daoUserService.insertUser(anotherEmail, anotherPassword, anotherNickName,
+                anotherFirstName, anotherLastName, anotherBirthday, anotherRole);
+        UserModel insertedUser = daoUserService.findUserByEmail(anotherEmail);
+        assert insertedUser != null;
+        assert daoUserService.deleteUserById(insertedUser.getId());
     }
 
     @Transactional
     @Test
-    public void updateUser() throws Exception {
-        System.out.println("Test updateUser start");
-        UserModel userToUpdate = (UserModel) entityManager.createQuery(
-                "from UserModel as user where user.nickName = ?")
-                .setParameter(1, nickName)
-                .getSingleResult();
-        int id = userToUpdate.getId();
-        userToUpdate.setFirstName(anotherFirstName);
-        userToUpdate.setLastName(anotherLastName);
-        userToUpdate.setBirthday(anotherBirthday);
-        userToUpdate.setPassword(anotherPassword);
-        entityManager.flush();
-        assert numberOfUsers == getNumberOfUsers();
-        userToUpdate = entityManager.find(UserModel.class, id);
-        assert(userToUpdate.getFirstName().equals(anotherFirstName));
-        assert(userToUpdate.getLastName().equals(anotherLastName));
-        assert(userToUpdate.getBirthday().equals(anotherBirthday));
-        assert(userToUpdate.getPassword().equals(anotherPassword));
-        userToUpdate.setFirstName(firstName);
-        userToUpdate.setLastName(lastName);
-        userToUpdate.setBirthday(birthday);
-        userToUpdate.setPassword(password);
-        entityManager.persist(userToUpdate);
-        entityManager.flush();
+    public void updateUserTest() throws Exception {
+        System.out.println("Test updateUserTest start");
+        UserModel userToUpdate = daoUserService.findUserById(userId);
+        String startPass = userToUpdate.getPassword();
+        String startFirstName = userToUpdate.getFirstName();
+        String startLastName = userToUpdate.getLastName();
+        Date startBirthday = userToUpdate.getBirthday();
+        assert daoUserService.updateUser(anotherPassword, userToUpdate.getNickName(),
+                anotherFirstName, anotherLastName, anotherBirthday);
+        UserModel updatedUser = daoUserService.findUserById(userId);
+        assert !updatedUser.getPassword().equals(startPass);
+        assert !updatedUser.getFirstName().equals(startFirstName);
+        assert !updatedUser.getLastName().equals(startLastName);
+        assert !updatedUser.getBirthday().equals(startBirthday);
+        assert daoUserService.updateUser(startPass, updatedUser.getNickName(),
+                startFirstName, startLastName, startBirthday);
     }
 
     @Transactional
     @Test
-    public void setEnabledUser() throws Exception {
-        System.out.println("Test setEnabledUser start");
-        UserModel userToEnable = (UserModel) entityManager.createQuery(
-                "from UserModel as user where user.email = ?")
-                .setParameter(1, email)
-                .getSingleResult();
-        int id = userToEnable.getId();
-        userToEnable.setEnabled(anotherEnabled);
-        entityManager.persist(userToEnable);
-        userToEnable = entityManager.find(UserModel.class, id);
-        assert userToEnable.isEnabled() == anotherEnabled;
-        assert numberOfUsers == getNumberOfUsers();
-        userToEnable.setEnabled(enabled);
-        entityManager.persist(userToEnable);
-        entityManager.flush();
+    public void setEnabledUserTest() throws Exception {
+        System.out.println("Test setEnabledUserTest start");
+        assert  daoUserService.setEnabledUser(email);
+        UserModel user = daoUserService.findUserByEmail(email);
+        assert user.isEnabled();
     }
 
     public void checkUser(UserModel user) {
         assert user != null;
-        assert user.getNickName().equals(nickName);
-        assert user.getFirstName().equals(firstName);
-        assert user.getLastName().equals(lastName);
-        assert user.getEmail().equals(email);
-        assert user.getPassword().equals(password);
-        assert birthday.equals(user.getBirthday());
-        assert user.isEnabled() == enabled;
+        assert user.getId() != 0;
+        assert user.getEmail() != null;
+        assert user.getNickName() != null;
+        assert user.getPassword() != null;
+        assert user.getBirthday() != null;
     }
 
-    public int getNumberOfUsers() {
-        String query = "from UserModel";
-        return entityManager.createQuery(query, UserModel.class).getResultList().size();
+    public void checkAllResultList(List elements) {
+        for (int i = 0; i < elements.size(); i++) {
+            assert elements.get(i) != null;
+            if (i % 6 == 0) {
+                System.out.println();
+            }
+            System.out.print(elements.get(i) + "\t");
+        }
     }
 }

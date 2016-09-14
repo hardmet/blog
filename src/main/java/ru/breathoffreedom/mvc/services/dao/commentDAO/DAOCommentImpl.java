@@ -7,6 +7,7 @@ import ru.breathoffreedom.mvc.models.CommentModel;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,20 +28,27 @@ public class DAOCommentImpl implements DAOCommentInterface {
     private DAOCommentImpl() {
     }
 
+    @Override
+    public CommentModel findCommentById(int commentId) {
+        return entityManager.find(CommentModel.class, commentId);
+    }
+
     @Transactional
-    public boolean insertComment(String author, String text, int postId) {
+    public CommentModel insertComment(String author, String text, int postId) {
+        System.out.println("DAOCommentImpl insertComment is called");
         CommentModel comment = new CommentModel(author, text, postId);
+        comment.setDate(new Date());
         entityManager.persist(comment);
         entityManager.flush();
-        return comment.getId() != 0;
+        return comment;
     }
 
 
-    public List findCommentsByPostId(int id) {
-        System.out.println("ORMService queryFindCommentsByPostId is called");
+    public List findCommentsByPostId(int postId) {
+        System.out.println("DAOCommentImpl findCommentsByPostId is called");
         return entityManager.createQuery(
-                "from CommentModel as comment where comment.post = ?")
-                .setParameter(1, id)
+                "from CommentModel as comment where comment.post = :postId")
+                .setParameter("postId", postId)
                 .getResultList();
     }
 
@@ -48,6 +56,7 @@ public class DAOCommentImpl implements DAOCommentInterface {
     @Override
     @Transactional
     public boolean updateComment(int commentId, String text) {
+        System.out.println("DAOCommentImpl updateComment is called");
         CommentModel updatedComment = entityManager.find(CommentModel.class, commentId);
         updatedComment.setText(text);
         entityManager.flush();
@@ -57,6 +66,7 @@ public class DAOCommentImpl implements DAOCommentInterface {
     @Override
     @Transactional
     public boolean deleteComment(int commentId) {
+        System.out.println("DAOCommentImpl deleteComment is called");
         CommentModel commentToRemove = entityManager.find(CommentModel.class, commentId);
         entityManager.remove(commentToRemove);
         entityManager.flush();

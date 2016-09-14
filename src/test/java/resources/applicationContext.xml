@@ -18,7 +18,7 @@
     <tx:annotation-driven/>
 
 
-    <!--find property file. See bean id='dataSource' for example ${jdbc.hsqldb.driverClass}-->
+    <!--find property uploadfile. See bean postId='dataSource' for example ${jdbc.hsqldb.driverClass}-->
     <context:property-placeholder location="classpath:util.properties"/>
 
     <!-- XML Bean Definitions -->
@@ -61,6 +61,9 @@
     <!-- Automatic Transaction Participation-->
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <bean id="virtualFileSystem" class="ru.breathoffreedom.mvc.services.vfs.VFSImplTest">
     </bean>
 
 </beans>

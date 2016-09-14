@@ -1,9 +1,8 @@
 package ru.breathoffreedom.mvc.models;
 
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
@@ -16,14 +15,14 @@ public class CommentModel {
     @Column(name = "ID")
     private int id;
 
-    @NotEmpty
+    @NotNull
     @Column(name = "AUTHOR")
     private String author;
 
     @Column(name = "COMMENT_DATE")
     private Date date;
 
-    @NotEmpty
+    @NotNull
     @Size(min = 5, max = 3000)
     @Column(name = "TEXT")
     private String text;

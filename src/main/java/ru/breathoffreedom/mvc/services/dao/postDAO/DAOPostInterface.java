@@ -12,8 +12,10 @@ public interface DAOPostInterface {
 
     boolean updatePost(int postId, String title, String subtitle, String text);
 
-    boolean insertPost(String author, String title, String subtitle, String text);
+    int insertPost(String author, String title, String subtitle, String text);
 
     boolean deletePost(int idPost);
+
+    long getLastId();
 
 }
