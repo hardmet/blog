@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import ru.breathoffreedom.mvc.models.EmailModel;
+import ru.breathoffreedom.mvc.models.email.Email;
 import ru.breathoffreedom.mvc.services.email.EmailServiceImpl;
 import ru.breathoffreedom.mvc.services.email.EmailServiceInterface;
 
@@ -33,24 +33,23 @@ public class EmailController {
 
     /**
      * method is send message to author of blog from contact form
-     * @param emailModel - the model of email message
+     * @param email - the model of email message
      * @return - result of sending message
      */
     @RequestMapping(value = "/contact/send", method = RequestMethod.POST)
-    public ModelAndView email(@ModelAttribute("emailModel") EmailModel emailModel) {
-        System.out.println("EmailController email is called");
+    public ModelAndView email(@ModelAttribute("emailModel") Email email) {
         boolean result = false;
-        if (emailModel.getEmail() != null) {
+        if (email.getEmail() != null) {
             Map<String, Object> model = new HashMap<>();
-            model.put("from", emailModel.getEmail());
-            model.put("subject", "Question from " + emailModel.getName() + "!");
+            model.put("from", email.getEmail());
+            model.put("subject", "Question from " + email.getName() + "!");
             model.put("to", "borkafedor@mail.ru");
             model.put("ccList", new ArrayList<>());
             model.put("bccList", new ArrayList<>());
             model.put("userName", "guest of GI");
             model.put("urlbreathoffreedom", "breathoffreedom.ru");
-            model.put("message", emailModel.getMessage());
-            result = emailService.sendEmail("registered.vm", model);
+            model.put("message", email.getMessage());
+            result = emailService.sendEmail("baseEmail.vm", model);
         }
 
         return new ModelAndView("redirect:/contact", "resultSending", result);

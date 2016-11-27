@@ -3,7 +3,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="page" tagdir="/WEB-INF/tags" %>
 
-<page:template>
+<page:basePage>
     <jsp:attribute name="title">Error 404</jsp:attribute>
 
     <jsp:body>
@@ -24,4 +24,4 @@
         <hr>
     </jsp:body>
 
-</page:template>
+</page:basePage>

@@ -9,12 +9,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import ru.breathoffreedom.mvc.models.MessageResponse;
+import ru.breathoffreedom.mvc.models.user.Author;
 import ru.breathoffreedom.mvc.services.dao.userDAO.DAOUserInterface;
-import ru.breathoffreedom.mvc.models.UserModel;
 
 import java.util.*;
 
@@ -36,20 +35,19 @@ public class UserController {
     }
 
     @MessageMapping("/check/{sessionId}")
-    @SendTo("/service/registration/result/{sessionId}")
-    public HttpStatus addUser(UserModel userModel, @DestinationVariable("sessionId") String sessionId) {
-        System.out.println("UserController resultOfRegistration is called");
-        String email = userModel.getEmail();
-        String nick = userModel.getNickName();
+    @SendTo("/email/registration/result/{sessionId}")
+    public HttpStatus addUser(Author author, @DestinationVariable("sessionId") String sessionId) {
+        String email = author.getEmail();
+        String nick = author.getNickName();
         if (daoUserService.findAllUserNames().contains(email)
                 || daoUserService.findAllNicks().contains(nick)) {
             return HttpStatus.CONFLICT;
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            String password = encoder.encode(userModel.getPassword());
-            String firstName = userModel.getFirstName();
-            String lastName = userModel.getLastName();
-            Date birthday = userModel.getBirthday();
+            String password = encoder.encode(author.getPassword());
+            String firstName = author.getFirstName();
+            String lastName = author.getLastName();
+            Date birthday = author.getBirthday();
             String role = "ROLE_USER";
             boolean resultInsert = daoUserService.insertUser(email, password, nick,
                     firstName, lastName, birthday, role);
@@ -62,36 +60,36 @@ public class UserController {
     }
 
     /**
-     * This method for start editing user profile
+     * This method for start editing user author
      * @return edited user model for editing
      */
     @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_SUPER_USER') || hasRole('ROLE_USER')")
     @RequestMapping(value = "/user/edit", method = RequestMethod.GET)
-    public ModelAndView findUserByEmail() {
+    public ModelAndView startEditUser() {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println("ORMController queryFindByIdEmail is called");
-        UserModel userModel = daoUserService.findUserByEmail(userEmail);
-        System.out.println(userModel.getBirthday());
-        return new ModelAndView("/user/profile", "user", userModel);
+        Author author = daoUserService.findUserByEmail(userEmail);
+        return new ModelAndView("/web/author", "user", author);
     }
 
     /**
-     * This method save changes in user profile
-     * @param userModel - is changed or maybe not user information in profile
-     * @return - result of saving changes at the user profile
+     * This method save changes in user author
+     * @param author - is changed or maybe not user information in author
+     * @return - result of saving changes at the user author
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_SUPER_USER') || hasRole('ROLE_USER')")
-    @RequestMapping(value = "/user/save", method = RequestMethod.POST)
-    public ModelAndView updateUser(@ModelAttribute("userModel") UserModel userModel) {
-        System.out.println("UserController updateUser is called");
-        String password = userModel.getPassword();
-        String nick = userModel.getNickName();
-        String firstName = userModel.getFirstName();
-        String lastName = userModel.getLastName();
-        Date birthday = userModel.getBirthday();
+    @RequestMapping(value = "/user/save", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody MessageResponse updateUser(@RequestBody Author author) {
+        String password = author.getPassword();
+        String nick = author.getNickName();
+        String firstName = author.getFirstName();
+        String lastName = author.getLastName();
+        Date birthday = author.getBirthday();
         boolean resultOfChangingProfile = daoUserService.updateUser(password, nick,
                 firstName, lastName, birthday);
-        return new ModelAndView("redirect:/userModel/profile",
-                "resultOfChangingProfile", resultOfChangingProfile);
+        if (resultOfChangingProfile) {
+            return new MessageResponse("User successfully updated!");
+        }
+        return new MessageResponse("Something was going wrong! Updating rejected!");
     }
+
+
 }

@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.breathoffreedom.mvc.services.vfs.VFS;
 
-import javax.annotation.security.RolesAllowed;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,12 +31,10 @@ public class FileUploadController {
      * @param directory   - directory - destination to save files
      * @return - result messages of uploading uploadImages
      */
-    @RolesAllowed(value={"ROLE_ADMIN"})
     @RequestMapping(value = "/uploadImage", method = RequestMethod.POST)
     @ResponseBody
     public List<String> handleFileUpload(@RequestParam("uploadImages") MultipartFile[] uploadImage,
                                          @RequestParam("directory") String directory) {
-        System.out.println("handleFileUpload is called");
         List<String> resultOfUpload = new ArrayList<>();
         for (MultipartFile file : uploadImage) {
             if (!file.isEmpty()) {

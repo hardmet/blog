@@ -2712,9 +2712,7 @@ pre code {
 .main-content {
     background: #ffffff;
     color: rgb(41, 40, 34);
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-top: 15px;
+    padding: 15px;
     width: 84%;
     margin-right: auto;
     margin-left: auto;
@@ -2904,7 +2902,7 @@ legend {
 }
 
 label {
-    display: inline-block;
+    display: block;
     max-width: 100%;
     margin-bottom: 5px;
     font-weight: 700
@@ -2959,7 +2957,6 @@ output {
     background-color: #fff;
     background-image: none;
     border: 1px solid #ccc;
-    border-radius: 4px;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
     -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
@@ -3029,7 +3026,7 @@ input[type=search] {
 
 .checkbox, .radio {
     position: relative;
-    display: block;
+    display: inline-block;
     margin-top: 10px;
     margin-bottom: 10px
 }
@@ -3453,7 +3450,8 @@ a.btn.disabled, fieldset[disabled] a.btn {
 .btn-default {
     color: rgb(215, 222, 169);
     background-color: #172147;
-    border-color: #ccc
+    border-color: #ccc;
+    margin: 15px 0 0 0;
 }
 
 .btn-default.focus, .btn-default:focus {
@@ -4306,7 +4304,7 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
 
 .nav > li {
     position: relative;
-    display: block
+    display: inline-block;
 }
 
 .nav > li > a {
@@ -4541,6 +4539,33 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
     }
 }
 
+.query-form {
+    height: 100px;
+    margin: 20px;
+}
+
+.btn-search {
+    display: block;
+    position: relative;
+    float: left;
+    margin-left: 10px;
+    height: 38px;
+    padding: 3px 10px;
+}
+
+.form-control {
+    float: left;
+    position: relative;
+    display: block;
+}
+
+.icon-search {
+    top: -7px!important;
+    right: -25px;
+    float: left;
+    display: block!important;
+}
+
 .navbar-collapse {
     padding-right: 15px;
     padding-left: 15px;
@@ -4730,12 +4755,12 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
 
 @media (min-width: 768px) {
     .navbar-nav {
-        float: left;
-        margin: 0
+        margin: 0 auto;
+        width: 70%;
+        text-align: center;
     }
 
     .navbar-nav > li, .submenu > li {
-        float: left;
         width: 120px;
         text-align: center;
     }
@@ -4891,6 +4916,7 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
     .navbar-right ~ .navbar-right {
         margin-right: 0
     }
+
 }
 
 .navbar-default {
@@ -5229,7 +5255,6 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
     padding: 5px 14px;
     background-color: #172147;
     border: 1px solid #ccc;
-    border-radius: 5px
 }
 
 .pager li > a:focus, .pager li > a:hover {
@@ -6340,7 +6365,7 @@ button.close {
     background-color: #F2F7F7;
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
-    padding: 10px 15px;
+    padding: 10px 15px 15px 15px;
     color: rgb(41, 40, 34);
     outline: 0;
     -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
@@ -7018,7 +7043,6 @@ button.close {
 .comment-content {
     margin: 15px 0px;
     background: #FFFFFF;
-    border-radius: 5px;
     padding: 5px;
 }
 
@@ -7043,6 +7067,13 @@ button.close {
 .delete-content:hover {
     cursor: pointer;
     color: #801D1D;
+}
+
+.floating-label-form-access_group {
+    padding-bottom: 0;
+}
+.hidden {
+    display: none;
 }
 
 @media (max-width: 767px) {

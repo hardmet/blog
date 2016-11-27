@@ -43,16 +43,16 @@
         <property name="maxUploadSize" value="10485760"/>
     </bean>
 
-    <mvc:view-controller path="/login" view-name="/login/login"/>
-    <mvc:view-controller path="/" view-name="/index"/>
-    <mvc:view-controller path="/index" view-name="/index"/>
-    <mvc:view-controller path="/projects" view-name="/projects/projects"/>
-    <mvc:view-controller path="/about" view-name="/about/about"/>
-    <mvc:view-controller path="/contact" view-name="/contact/contact"/>
-    <mvc:view-controller path="/post" view-name="/post/post"/>
+    <mvc:view-controller path="/login" view-name="/web/login"/>
+    <mvc:view-controller path="/" view-name="/web/index"/>
+    <mvc:view-controller path="/index" view-name="/web/index"/>
+    <mvc:view-controller path="/projects" view-name="/web/projects"/>
+    <mvc:view-controller path="/about" view-name="/web/about"/>
+    <mvc:view-controller path="/contact" view-name="/web/contact"/>
+    <mvc:view-controller path="/post" view-name="/web/post"/>
     <mvc:view-controller path="/newpost" view-name="/post/newpost"/>
     <mvc:view-controller path="/allposts" view-name="/post/allposts"/>
-    <mvc:view-controller path="/user" view-name="/user/profile"/>
+    <mvc:view-controller path="/user" view-name="/user/author"/>
     <mvc:view-controller path="/error403" view-name="/error/error403"/>
 
     <!-- Static Resources Configuration (get access to static sources such as CSS and JavaScript files) -->

@@ -11,7 +11,7 @@ $(document).ready(function () {
     });
 
     postId = $("#postId")[0].innerHTML;
-    currentUser = $("#currentSessionUser")[0].innerHTML;
+    currentUser = $(".currentSessionUser").val();
 });
 
 function setConnected(connected) {
@@ -30,7 +30,7 @@ function connect() {
     stompClient.connect({}, function (frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/service/add/'+postId, function (response) {
+        stompClient.subscribe('/email/add/'+postId, function (response) {
             var comment = JSON.parse(response.body);
             addComment(comment.id, comment.author, comment.date, comment.text, comment.post);
         });
@@ -58,22 +58,19 @@ function addComment(id, author, date, text, post) {
         var dateOptions = {year: 'numeric', month: 'long', day: 'numeric'};
         var commentId = "comment_" + id;
         $("#comments").append("" +
-            "<div class='comment-content' id='" + commentId + "'> " +
-                "<span class='comment-head'><a href='#'>" + author + "</a> " +
-                        "<c:if test='${not isUniqUer}'>"+
-                            "<script>"+
-                                "$('.delete-content').css('display','none'); " +
-                            "</script>" +
-                        "</c:if>"+
-                    "<span class='fa fa-close delete-content' title='удалить комментарий'></span>"+
+            "<div class='comment-content'> " +
+                "<input type='hidden' class='js-comment-id' value=" + commentId + ">"+
+                "<span class='comment-head'><a href=''>author<a/>" +
+                    "<span class='fa fa-close delete-content'" +
+                        "title='удалить комментарий'></span>"+
                     "<span class='comment-time'> " +
                         postDate.toLocaleDateString('en-US', dateOptions) +
                     "</span> " +
                 "</span> " +
                 "<span>" + text + "</span> " +
-            "</div>");
-        var comment = $("#"+commentId);
-        comment.css("display","none").animate({opacity: "show"}, "slow");
+            "</div>").css("display","none").animate({opacity: "show"}, "slow");
+        // var comment = $("#"+commentId);
+        // comment.css("display","none").animate({opacity: "show"}, "slow");
     }
 }
 

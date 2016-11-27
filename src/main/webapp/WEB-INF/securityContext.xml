@@ -15,7 +15,7 @@
         and to configure how they should be handled. It is used to construct the
         FilterInvocationSecurityMetadataSource used by the FilterSecurityInterceptor-->
         <intercept-url pattern="/newpost" access="hasRole('ROLE_ADMIN')"/>
-        <!--Если попытаться войти без логина на страницу в этом маппинге (например http://localhost:8080/userModel/),
+        <!--Если попытаться войти без логина на страницу в этом маппинге (например http://localhost:8080/author/),
         то будет переброшено на страницу, указанную в form-login login-page='pageName.html' -->
         <!--<intercept-url pattern="/user/**" access="hasAnyRole('ROLE_ADMIN','ROLE_SUPER_USER', 'ROLE_USER')"/>-->
         <access-denied-handler error-page="/error403"/>
@@ -29,7 +29,7 @@
         />
 
         <logout logout-url="/j_spring_security_logout" logout-success-url="/"/>
-        <!--Save logged userModel in cookie with name key='name' -->
+        <!--Save logged author in cookie with name key='name' -->
         <remember-me key="myKey" token-validity-seconds="600"/>
 
         <csrf disabled="false"/>
@@ -37,9 +37,9 @@
     </http>
 
     <jdbc-user-service id="jdbcUserService" data-source-ref="dataSource"
-                       users-by-username-query="SELECT EMAIL, PASSWORD, ENABLED FROM USER WHERE EMAIL=?"
-                       authorities-by-username-query="SELECT USERNAME, ACCESS_GROUP
-        	 FROM AUTHORITIES WHERE USERNAME = ? "/>
+                       users-by-username-query="SELECT email, password, enabled FROM author WHERE email=?"
+                       authorities-by-username-query="SELECT useremail, access_group
+        	 FROM authorities WHERE usermail = ? "/>
 
     <authentication-manager alias="authenticationManager">
         <authentication-provider user-service-ref="jdbcUserService">

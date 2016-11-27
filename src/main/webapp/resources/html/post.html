@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Clean Blog - Sample Post</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="../css/clean-blog.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet'
+          type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+          rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet">
+
+    <link rel="stylesheet" href="../fancybox/jquery.fancybox.css" type="text/css" media="screen"/>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body style="background-image: url('../img/leaf-back.jpg'); background-repeat: repeat; ">
+<div class="wrapper">
+    <div class="content" rel="main">
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header page-scroll">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse"
+                            data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        Menu <i class="fa fa-bars"></i>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Start Bootstrap</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="index.html">Home</a>
+                        </li>
+                        <li>
+                            <a href="../html/about.html">About</a>
+                        </li>
+                        <li>
+                            <a href="post.html">Post</a>
+                        </li>
+                        <li>
+                            <a href="contact.html">Contact</a>
+                        </li>
+                        <li>
+                            <form action="${logoutUrl}" method="post">
+                                <button type="submit">Sign out</button>
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                            </form>
+                            <ul class="submenu">
+                                <li><a href="#">Profile</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container -->
+        </nav>
+
+        <!-- Page Header -->
+        <!-- Set your background image for this header on the line below. -->
+        <header class="intro-header">
+            <img class="header-image" src="../img/post-bg.jpg">
+        </header>
+
+        <div class="titles">
+            <h1>Здесь можно отслеживать мои проекты.</h1>
+            <h2 class="subheading">Раздел будет переодически пополняться.</h2>
+        </div>
+        <!-- Post Content -->
+        <article>
+            <div class="container">
+                <div class="row">
+                    <div class="main-content">
+                        <p>Основных проектов, которыми я сейчас занимаюсь на данный момент два.</p>
+                        <ul>
+                            <li>blog - это данный сайт, на котором вы сейчас находитесь.</li>
+                            <li>QuestaHome - это андройд приложение, которое я сейчас разрабатываю.</li>
+                        </ul>
+                        Ниже я попытаюсь коротоко и ясно описать: что, куда, как и зачем я это делаю.
+                        <h3 class="section-heading">Blog</h3>
+                        <p>Данный сайт задумывался изначально как площадка для экспериментов, некий своеобразный
+                            полигон, для обкатки и тестирования моих веб-приложений. В последствии я решил, что можно
+                            начать с написания небольшого блога.<br><br> Здесь я периодически выкладываю свои мысли,
+                            впечатления, возможно буду писать небольшие гайды по различным технологиям. В свое время
+                            я понял, что писать небольшие тексты, пусть и без особого смысла - это неплохая практика
+                            развития навыков выражения своих мыслей в письменном виде. Поэтому данный проект реализует
+                            очень важные и полезные для меня вещи. Проект будет жить, пока я буду видеть нужду в нем.
+                        </p>
+                        <hr>
+                        <h3 class="section-heading">QuestaHome</h3>
+                        <p>Идея разработки андройд-приложения пришла ко мне после прохождения интенсива для начинающих
+                            по андройд разработке. Тогда я понял, что это довольно интересно и у меня есть все,
+                            чтобы создать свое приложение.<br><br> Данное приложение представляет собой игру жанра
+                            квест,
+                            в перспективе возможно добавление элементов дополненной реальности.
+                        </p>
+                        <div class="gallery">
+                            <div style="margin: 0 auto; width: 600px;">
+                                <a class="fancybox-thumb" rel="fancybox-thumb"
+                                   href="../img/questaHome_login_scr.jpg"
+                                   title="Экран входа в приложение">
+                                    <img class="img-responsive" src="../img/questaHome_login_scr.jpg" alt="">
+                                </a>
+                                <a class="fancybox-thumb" rel="fancybox-thumb"
+                                   href="../img/questaHome_main_menu.jpg"
+                                   title="Экран главного меню">
+                                    <img class="img-responsive" src="../img/questaHome_main_menu.jpg" alt="">
+                                </a>
+                                <a class="fancybox-thumb" rel="fancybox-thumb"
+                                   href="../img/questaHome_userprofile.jpg"
+                                   title="Панель профиля юзера">
+                                    <img class="img-responsive" src="../img/questaHome_userprofile.jpg" alt="">
+                                </a>
+                            </div>
+                        </div>
+                        <span class="caption text-muted">Вот так выглядит приложение сейчас</span>
+                        <p>
+                            Суть игры заключается в создании и прохождении квестов. Квест представляет собой
+                            последовательность точек на карте, в которые игрок перемещается. В самих точках, игрок
+                            получает некоторое задание (разгадать загадку, головоломку), и при успешном решении вводит
+                            ключ (пароль) - к следующей точке.
+                            <br><br>
+                            При успешном завершении квеста игрок получает очки,
+                            которые
+                            может потратить для получения подсказок при выполнении заданий в других квестах.
+                            Данное приложение должно поддерживать интерфейс добавления нового квеста любым игроком.<br>
+                            Возможно, данная идея уже реализованна, но это не суть, основная моя цель в этом приложении
+                            -
+                            прокачать навыки андройд разработки и просто сделать своими руками первую игру, в которую
+                            банально можно играть с друзьями, гуляя, и исследуя город.</p>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <hr>
+    </div>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-offset-2 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a class="social-btns" href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="social-btns" href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                    <!--<i class="fa fa-close fa-stack-1x fa-inverse"></i>-->
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="social-btns" href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright">Copyright &copy; Your Website 2016
+                        <br>
+                        Images - <a class="footer-buttons" href="https://vk.com/id10052664">Dmitry Azanov</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+<!-- jQuery -->
+<script src="http://code.jquery.com/jquery-latest.min.js"
+        type="text/javascript"></script>
+<script type="text/javascript" src="../fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" src="../fancybox/jquery.easing-1.4.pack.js"></script>
+<script type="text/javascript" src="../fancybox/jquery.mousewheel-3.0.6.pack.js"></script>
+<link rel="stylesheet" href="../fancybox/helpers/jquery.fancybox-buttons.css" type="text/css" media="screen"/>
+<script type="text/javascript" src="../fancybox/helpers/jquery.fancybox-buttons.js"></script>
+<script type="text/javascript" src="../fancybox/helpers/jquery.fancybox-media.js"></script>
+
+<link rel="stylesheet" href="../fancybox/helpers/jquery.fancybox-thumbs.css" type="text/css" media="screen"/>
+<script type="text/javascript" src="../fancybox/helpers/jquery.fancybox-thumbs.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+
+<!-- Contact Form JavaScript -->
+<script src="../js/jqBootstrapValidation.js"></script>
+<script src="../js/contact_me.js"></script>
+
+<!-- Theme JavaScript -->
+<script src="../js/clean-blog.min.js"></script>
+
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="../vendor/jquery/jquery-for-filling.js"></script>
+
+</body>
+
+</html>

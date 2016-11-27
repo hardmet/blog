@@ -5,17 +5,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.activation.MimetypesFileTypeMap;
-import javax.persistence.Query;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
 
 /**
  * This is test class for testing Virtual File System
@@ -27,10 +22,10 @@ import static org.junit.Assert.*;
 public class VFSImplTest {
 
     @Autowired
-    VFS fileSystem;
+    private VFS fileSystem;
 
-    String directory;
-    int[] ids;
+    private String directory;
+    private int[] ids;
 
     @Before
     public void setUp() throws Exception {
@@ -41,7 +36,7 @@ public class VFSImplTest {
             files[i] = new File(fileSystem.getRoot() + File.separator +
                     directory + File.separator + i + "image.jpg");
             if (files[i].exists()) {
-                files[i].delete();
+                assert files[i].delete();
             }
             files[i] = new File(fileSystem.getRoot() + File.separator +
                     directory + File.separator + i + "image.jpg");
@@ -58,7 +53,7 @@ public class VFSImplTest {
             files[i] = new File(fileSystem.getRoot() + File.separator +
                     directory + File.separator + ids[i] + ".jpg");
             if (files[i].exists()) {
-                files[i].delete();
+                assert files[i].delete();
             }
         }
     }
@@ -68,8 +63,6 @@ public class VFSImplTest {
      */
     @Test
     public void testGetCountOfImages() {
-        System.out.println("VFSImplTest testGetCountOfImages is called");
-        System.out.println(fileSystem.getCountOfImages(directory));
         assert fileSystem.getCountOfImages(directory) != 0;
         List<String> paths = fileSystem.getPathsToFiles(directory);
         for (String path : paths) {
@@ -82,7 +75,6 @@ public class VFSImplTest {
      */
     @Test
     public void testRenameImages() {
-        System.out.println("VFSImplTest testRenameImages is called");
         assert fileSystem.renameImages(directory, ids);
     }
 

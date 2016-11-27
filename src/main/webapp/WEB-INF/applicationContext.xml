@@ -4,6 +4,7 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xmlns:websocket="http://www.springframework.org/schema/websocket"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
@@ -11,7 +12,7 @@
        http://www.springframework.org/schema/jdbc
        http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
        http://www.springframework.org/schema/websocket
-       http://www.springframework.org/schema/websocket/spring-websocket.xsd">
+       http://www.springframework.org/schema/websocket/spring-websocket.xsd http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
     <!--find property file. See bean id='dataSource' for example ${jdbc.hsqldb.driverClass}-->
     <context:property-placeholder location="classpath:util.properties"/>
@@ -78,6 +79,8 @@
     <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
         <property name="resourceLoaderPath" value="/WEB-INF/email-templates/"/>
     </bean>
+
+    <jpa:repositories base-package="ru.breathoffreedom.mvc.services.blog.repository" />
 
     <websocket:message-broker application-destination-prefix="/app">
         <websocket:transport send-timeout="15000" send-buffer-size="524288" />

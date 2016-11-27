@@ -20,7 +20,7 @@
     <!-- context:component-scan This tag will scan @Component, @Repository, @Service, @Controller
          and also resolves @Autowired and @Qualifier -->
     <context:component-scan base-package="ru.breathoffreedom.mvc.services.vfs"/>
-    <context:component-scan base-package="ru.breathoffreedom.mvc.services.dao"/>
+    <context:component-scan base-package="ru.breathoffreedom.mvc.services"/>
 
 
     <mvc:annotation-driven/>
@@ -54,7 +54,7 @@
     <mvc:view-controller path="/post" view-name="/post/post"/>
     <mvc:view-controller path="/newpost" view-name="/post/newpost"/>
     <mvc:view-controller path="/allposts" view-name="/post/allposts"/>
-    <mvc:view-controller path="/user" view-name="/user/profile"/>
+    <mvc:view-controller path="/user" view-name="/user/author"/>
     <mvc:view-controller path="/error403" view-name="/error/error403"/>
 
     <!-- Static Resources Configuration (get access to static sources such as CSS and JavaScript files) -->

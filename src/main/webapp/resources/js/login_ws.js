@@ -16,7 +16,7 @@ function connect() {
         setConnected(true);
         console.log('Connected: ' + frame);
         console.log('current session is ' + idCurrentSession);
-        stompClient.subscribe('/service/registration/result/' + idCurrentSession, function (response) {
+        stompClient.subscribe('/email/registration/result/' + idCurrentSession, function (response) {
             console.log(response.body);
             resultOfRegistration(response.body);
         });

@@ -45,7 +45,7 @@ p a {
 }
 
 a:focus, a:hover {
-    color: #172147
+    color: #4DDCF9
 }
 
 a img:focus, a img:hover {
@@ -107,7 +107,6 @@ hr.small {
     .navbar-custom .nav li a, .navbar-custom .nav li form button, .submenu li a {
         color: #024863;
         padding: 20px;
-        border-left: 1px solid #024863
     }
 
     .navbar-custom .nav li a:focus, .submenu li a:focus,
@@ -249,8 +248,7 @@ hr.small {
 
 .post-preview {
     background: #EFEDFA;
-    border-radius: 10px;
-    padding-left: 5px;
+    padding-left: 5px;px
     padding-right: 5px;
     padding-top: 0px;
     position: relative;

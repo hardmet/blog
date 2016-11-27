@@ -1,5 +1,9 @@
 package ru.breathoffreedom.mvc.services.vfs;
 
+import ru.breathoffreedom.mvc.models.file.Image;
+import ru.breathoffreedom.mvc.services.image.ImageFormat;
+
+import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,16 +20,20 @@ public interface VFS {
 
     String getAbsolutePath(String file);
 
-    Iterator<String> getIterator(String startDir);
+    Iterator<File> getIterator(String startDir);
 
     String getRoot();
 
     String getDirectory(String directoryName);
 
-    List<String> getPathsToFiles(String rootDirectory);
+    List<File> getPathsToFiles(String rootDirectory);
 
     int getCountOfImages(String directory);
 
     boolean renameImages(String directory, int[] ids);
+
+    boolean removeImages(int postId);
+
+    boolean removeImage(Image image, ImageFormat [] formats);
 
 }

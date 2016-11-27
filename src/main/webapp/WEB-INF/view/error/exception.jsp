@@ -3,7 +3,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="page" tagdir="/WEB-INF/tags" %>
 
-<page:template>
+<page:basePage>
     <jsp:body>
         <!-- Page Header -->
         <!-- Set your background image for this header on the line below. -->
@@ -45,4 +45,4 @@
         <!-- /.row -->
         <!-- /.container -->
     </jsp:body>
-</page:template>
+</page:basePage>

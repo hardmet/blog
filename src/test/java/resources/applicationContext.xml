@@ -3,7 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
-       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
@@ -11,14 +11,14 @@
        http://www.springframework.org/schema/mvc
        http://www.springframework.org/schema/mvc/spring-mvc.xsd
        http://www.springframework.org/schema/tx
-       http://www.springframework.org/schema/tx/spring-tx.xsd">
+       http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
     <mvc:annotation-driven/>
 
     <tx:annotation-driven/>
 
 
-    <!--find property uploadfile. See bean postId='dataSource' for example ${jdbc.hsqldb.driverClass}-->
+    <!--find property uploadfile. See bean post='dataSource' for example ${jdbc.hsqldb.driverClass}-->
     <context:property-placeholder location="classpath:util.properties"/>
 
     <!-- XML Bean Definitions -->
@@ -65,5 +65,7 @@
 
     <bean id="virtualFileSystem" class="ru.breathoffreedom.mvc.services.vfs.VFSImplTest">
     </bean>
+
+    <jpa:repositories base-package="ru.breathoffreedom.mvc.services.blog.repository" />
 
 </beans>

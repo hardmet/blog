@@ -16,7 +16,6 @@ h2 {
   padding: 15px;
   margin: 10px auto;
   background: #EDE9CA;
-  border-radius: 5px;
   border: 1px solid #290D00;
   margin-top: 30px;
 }
@@ -48,7 +47,7 @@ h2 {
   color: #333;
 }
 
-button, .btn-default {
+.btn-default {
   margin: 0 auto;
   width: 150px;
   display: block;

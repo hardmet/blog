@@ -5,23 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import ru.breathoffreedom.mvc.models.CommentModel;
+import ru.breathoffreedom.mvc.models.blog.Comment;
 import ru.breathoffreedom.mvc.services.dao.commentDAO.DAOCommentInterface;
 import ru.breathoffreedom.mvc.services.dao.userDAO.DAOUserInterface;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.security.Principal;
 
 
 /**
@@ -50,9 +37,8 @@ public class CommentController {
      * @return - the page of post with added new comment
      */
     @MessageMapping("/commentToPost/{postId}")
-    @SendTo("/service/add/{postId}")
-    public CommentModel addComment(CommentModel comment, @DestinationVariable("postId") int postId) {
-        System.out.println("CommentController addComment is called");
+    @SendTo("/email/add/{postId}")
+    public Comment addComment(Comment comment, @DestinationVariable("postId") int postId) {
         String email = comment.getAuthor();
         String author;
         if (!email.equals("")) {
@@ -61,7 +47,7 @@ public class CommentController {
             author = "Guest";
         }
         String text = comment.getText();
-        CommentModel addedComment = daoCommentService.insertComment(author, text, postId);
+        Comment addedComment = daoCommentService.insertComment(author, text, postId);
         if (addedComment.getId() == 0 ) {
             return null;
         }
@@ -76,7 +62,6 @@ public class CommentController {
     @MessageMapping("/commentToDelete/{commentId}")
     @SendTo("/comment/delete/{commentId}")
     public boolean deleteComment(@DestinationVariable("commentId") int commentId) {
-        System.out.println("CommentController deleteComment is called");
         return daoCommentService.deleteComment(commentId);
     }
 }
