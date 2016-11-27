@@ -2,10 +2,13 @@ package ru.breathoffreedom.mvc.services.vfs;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.breathoffreedom.mvc.models.file.Image;
+import ru.breathoffreedom.mvc.services.image.ImageFormat;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.validation.constraints.NotNull;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -28,6 +31,7 @@ public class VFSImpl implements VFS {
     /**
      * Method getDirectory create directory if it not exist or return
      * null if error happened or return existing directory
+     *
      * @param directoryName - relative path to directory what is needed excluding root directory
      * @return - directory or null if directory doesn't exist and can't to be created
      */
@@ -63,14 +67,14 @@ public class VFSImpl implements VFS {
     /**
      * Method getPathsToFiles need for return List of files placed at the directory
      * Searching is recursive.
-     *  @param rootDirectory - relative path to directory what is needed excluding root directory
+     *
+     * @param rootDirectory - relative path to directory what is needed excluding root directory
      * @return - list of files, without folders
      */
     @Override
-    public List<String> getPathsToFiles(String rootDirectory) {
-        System.out.println("VFSImpl getPathsToFiles is called");
+    public List<File> getPathsToFiles(String rootDirectory) {
         FileIterator iterator = new FileIterator(rootDirectory);
-        List<String> listOfFiles = new ArrayList<>();
+        List<File> listOfFiles = new ArrayList<>();
         while (iterator.hasNext()) {
             listOfFiles.add(iterator.next());
         }
@@ -80,16 +84,15 @@ public class VFSImpl implements VFS {
     /**
      * This method searching paths to files of directory, and counting the files
      * that have mimeType first part image
+     *
      * @param directory - directory where counting is happened
      * @return - count of image file in directory
      */
     @Override
     public int getCountOfImages(String directory) {
-        System.out.println("VFSImpl getCountOfImages is called");
-        List<String> paths = getPathsToFiles(directory);
+        List<File> files = getPathsToFiles(directory);
         int counter = 0;
-        for (String pathToFile : paths) {
-            File file = new File(pathToFile);
+        for (File file : files) {
             String mimeType = new MimetypesFileTypeMap().getContentType(file);
             String type = mimeType.split("/")[0];
             if (type.equals("image")) {
@@ -101,12 +104,12 @@ public class VFSImpl implements VFS {
 
     /**
      * This method is renaming all images in directory by [id].[extension] pattern
+     *
      * @param directory - where images needed to rename
      * @param ids       - new names for file
      * @return - result of rename
      */
     public boolean renameImages(String directory, int[] ids) {
-        System.out.println("VFSImpl renameImages is called");
         Iterator iterator = getIterator(directory);
         for (int i = 0; iterator.hasNext(); ) {
             Path pathToFile = Paths.get((String) iterator.next());
@@ -129,13 +132,54 @@ public class VFSImpl implements VFS {
         return true;
     }
 
+    @Override
+    public boolean removeImages(int postId) {
+        boolean resultOfDelete = false;
+        FileIterator iterator = new FileIterator("images" + File.separator + "post" +
+                File.separator + postId);
+        while (iterator.hasNext()) {
+            File file = iterator.next();
+            try {
+                resultOfDelete = removeFile(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return resultOfDelete;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean removeImage(Image image, ImageFormat[] formats) {
+        boolean resultOfDelete = false;
+        for (ImageFormat format : formats) {
+            File file = new File("images" + File.separator + "post" + File.separator +
+                    image.getPost().getId() + File.separator + image.getId() + File.separator +
+                    format.name() + ".jpg");
+            try {
+                resultOfDelete = removeFile(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return resultOfDelete;
+            }
+        }
+        return true;
+    }
+
+    private boolean removeFile(File file) throws IOException {
+        if (!file.delete()) {
+            throw new IOException("Wrong deleting image:" + file.getAbsolutePath());
+        }
+        return true;
+    }
+
     /**
      * finds the file extension from all file name
+     *
      * @param file - file is needed to find extension
      * @return - extension or ""
      */
-    public static String getFileExtension(@NotNull File file) {
-        System.out.println("VFSImpl getFileExtension is called");
+    private static String getFileExtension(@NotNull File file) {
         String fileName = file.getName();
         int i = fileName.lastIndexOf('.');
         if (i > 0) {
@@ -146,25 +190,27 @@ public class VFSImpl implements VFS {
 
     /**
      * method for give FileIterator in directory
+     *
      * @param startDir - root directory for iterator
      * @return - FileIterator ready to visit directories and files
      */
     @Override
-    public Iterator<String> getIterator(String startDir) {
+    public Iterator<File> getIterator(String startDir) {
         return new FileIterator(startDir);
     }
 
     /**
      * This help class for using File Iterations.
      */
-    private class FileIterator implements Iterator<String> {
+    private class FileIterator implements Iterator<File> {
         private Queue<File> files = new LinkedList<>();
 
         /**
          * constructor of File Iterator
+         *
          * @param path - path to directory where iterator will be start visiting
          */
-        public FileIterator(String path) {
+        FileIterator(String path) {
             files.add(new File(root + File.separator + path));
         }
 
@@ -175,18 +221,20 @@ public class VFSImpl implements VFS {
 
         /**
          * getting next absolute path to the next file
+         *
          * @return - absolute path to file as String
          */
         @Override
-        public String next() {
+        public File next() {
             File file = files.peek();
             if (file.isDirectory()) {
                 files.remove(file);
-                for (File subFile : file.listFiles()) {
-                    files.add(subFile);
+                File[] listFiles = file.listFiles();
+                if (listFiles != null) {
+                    Collections.addAll(files, listFiles);
                 }
             }
-            return files.poll().getAbsolutePath();
+            return files.poll();
         }
 
         @Override
