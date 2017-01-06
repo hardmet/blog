@@ -4,6 +4,7 @@ import ru.breathoffreedom.mvc.models.blog.Post;
 import ru.breathoffreedom.mvc.models.file.Image;
 import ru.breathoffreedom.mvc.models.user.Author;
 import ru.breathoffreedom.mvc.services.image.ImageFilter;
+import ru.breathoffreedom.mvc.services.image.ImageFormat;
 
 import java.util.List;
 
@@ -13,6 +14,8 @@ import java.util.List;
 public interface ImageService {
 
     List<Image> getImages(Post post);
+
+    List<Image> getImages(int postId);
 
     List<Image> getImages(ImageFilter filter);
 
@@ -31,4 +34,12 @@ public interface ImageService {
     void removePostImagesByAuthor(Author author);
 
     void removePostImagesByAuthorId(int authorId);
+
+    List<String> getImagesFromFileSystem(ImageFormat[] formats, Post post);
+
+    List<String> getImagesFromFileSystem(Post post);
+
+    String getPostMainImage(int postId);
+
+    String getImageFromFileSystem(Image image, ImageFormat format);
 }

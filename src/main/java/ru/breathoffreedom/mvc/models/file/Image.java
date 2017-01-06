@@ -33,9 +33,8 @@ public class Image {
         this.id = id;
     }
 
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_id", nullable = false)
     public Post getPost() {
         return post;
     }

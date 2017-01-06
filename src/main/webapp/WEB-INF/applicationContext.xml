@@ -25,10 +25,10 @@
         <property name="password" value="${jdbc.password}"/>
     </bean>
 
-    <!--initialize DataSource.-->
+    <!--initialize Embedded DataSource. Встроенная база данных-->
     <!--<jdbc:initialize-database data-source="dataSource">-->
-    <!--<jdbc:script location="classpath:dbschema.sql"/>-->
-    <!--<jdbc:script location="classpath:test-data.sql"/>-->
+        <!--<jdbc:script location="classpath:dbschema.sql"/>-->
+        <!--<jdbc:script location="classpath:test-data.sql"/>-->
     <!--</jdbc:initialize-database>-->
 
     <!--Do not forget activate @Transactional JPA annotation with <annotation-driven/>-->
@@ -47,7 +47,7 @@
         <property name="jpaProperties">
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.format_sql">false</prop>
                 <prop key="hibernate.hbm2ddl.auto">update</prop>
             </props>
@@ -80,11 +80,12 @@
         <property name="resourceLoaderPath" value="/WEB-INF/email-templates/"/>
     </bean>
 
-    <jpa:repositories base-package="ru.breathoffreedom.mvc.services.blog.repository" />
+    <jpa:repositories base-package="ru.breathoffreedom.mvc.services" />
+
 
     <websocket:message-broker application-destination-prefix="/app">
-        <websocket:transport send-timeout="15000" send-buffer-size="524288" />
-        <websocket:stomp-endpoint path="/blog-websocket">
+        <websocket:transport send-timeout="30000" send-buffer-size="524288" />
+        <websocket:stomp-endpoint path="/blog-websocket" allowed-origins="*">
             <websocket:sockjs/>
         </websocket:stomp-endpoint>
         <websocket:simple-broker prefix="/service"/>

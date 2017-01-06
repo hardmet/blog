@@ -1,15 +1,17 @@
 package ru.breathoffreedom.mvc.services.blog;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.breathoffreedom.mvc.models.blog.Comment;
 import ru.breathoffreedom.mvc.models.blog.Post;
 import ru.breathoffreedom.mvc.models.user.Author;
+import ru.breathoffreedom.mvc.models.user.Role;
 import ru.breathoffreedom.mvc.services.blog.filter.*;
 import ru.breathoffreedom.mvc.services.blog.repository.AuthorRepository;
 import ru.breathoffreedom.mvc.services.blog.repository.CommentRepository;
 import ru.breathoffreedom.mvc.services.blog.repository.PostRepository;
-import ru.breathoffreedom.mvc.services.image.ImageRepository;
 import ru.breathoffreedom.mvc.services.image.service.ImageService;
 
 import java.util.List;
@@ -58,6 +60,12 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
+    public Comment addComment(Comment comment, int postId) {
+        comment.setPost(getPost(postId));
+        return save(comment);
+    }
+
+    @Override
     public void removeComment(int commentId) {
         commentRepository.delete(commentId);
     }
@@ -77,6 +85,11 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public List<Post> getPosts(PostFilter filter) {
         return postRepository.findAll(PostSpec.getSpec(filter));
+    }
+
+    @Override
+    public Page<Post> getPosts(PostFilter filter, Pageable page) {
+        return postRepository.findAll(PostSpec.getSpec(filter), page);
     }
 
     @Override
@@ -115,7 +128,12 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public Author save(Author author) {
-        return authorRepository.save(author);
+        if (author.getId() != 0) {
+            return authorRepository.save(author);
+        }
+        author = authorRepository.save(author);
+        int result = authorRepository.addAuthority(author.getEmail(), Role.ROLE_USER.name());
+        return author;
     }
 
     @Override
@@ -124,5 +142,31 @@ public class BlogServiceImpl implements BlogService {
         imageService.removePostImagesByAuthorId(authorId);
         postRepository.deleteByAuthorId(authorId);
         authorRepository.delete(authorId);
+    }
+
+    @Override
+    public boolean hasAuthorWithEmail(String email) {
+        List<Author> authors = authorRepository.findAuthorByEmail(email);
+        return !authors.isEmpty();
+    }
+
+    @Override
+    public boolean hasAuthorWithNickName(String nickname) {
+        List<Author> authors = authorRepository.findAuthorByNickName(nickname);
+        return authors.size() > 0;
+    }
+
+    @Override
+    public int setAuthorRole(Author author, Role role) {
+        return authorRepository.setAuthorRole(author.getEmail(), role.name());
+    }
+
+    @Override
+    public Author getAuthor(String email) {
+        List<Author> authors = authorRepository.findAuthorByEmail(email);
+        if (authors.isEmpty()) {
+            return null;
+        }
+        return authors.get(0);
     }
 }

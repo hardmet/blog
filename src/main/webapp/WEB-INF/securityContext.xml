@@ -14,7 +14,7 @@
         <!--used to define the set of URL patterns that the application is interested in
         and to configure how they should be handled. It is used to construct the
         FilterInvocationSecurityMetadataSource used by the FilterSecurityInterceptor-->
-        <intercept-url pattern="/newpost" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/post/add" access="hasRole('ROLE_ADMIN')"/>
         <!--Если попытаться войти без логина на страницу в этом маппинге (например http://localhost:8080/author/),
         то будет переброшено на страницу, указанную в form-login login-page='pageName.html' -->
         <!--<intercept-url pattern="/user/**" access="hasAnyRole('ROLE_ADMIN','ROLE_SUPER_USER', 'ROLE_USER')"/>-->
@@ -28,6 +28,10 @@
                     authentication-failure-url="/login?error=true"
         />
 
+        <headers>
+            <frame-options policy="SAMEORIGIN"/>
+        </headers>
+
         <logout logout-url="/j_spring_security_logout" logout-success-url="/"/>
         <!--Save logged author in cookie with name key='name' -->
         <remember-me key="myKey" token-validity-seconds="600"/>
@@ -37,9 +41,9 @@
     </http>
 
     <jdbc-user-service id="jdbcUserService" data-source-ref="dataSource"
-                       users-by-username-query="SELECT email, password, enabled FROM author WHERE email=?"
+                       users-by-username-query="SELECT email, password, enabled FROM author WHERE email = ?"
                        authorities-by-username-query="SELECT useremail, access_group
-        	 FROM authorities WHERE usermail = ? "/>
+        	 FROM authorities WHERE useremail = ?"/>
 
     <authentication-manager alias="authenticationManager">
         <authentication-provider user-service-ref="jdbcUserService">

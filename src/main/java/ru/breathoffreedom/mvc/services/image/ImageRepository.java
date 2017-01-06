@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.breathoffreedom.mvc.models.file.Image;
 
+import java.util.List;
+
 /**
  * Created by boris_azanov on 27.11.16.
  */
@@ -16,12 +18,11 @@ public interface ImageRepository extends JpaRepository<Image, Integer>, JpaSpeci
 
     @Modifying
     @Transactional
-    @Query(value="delete from Images where i.id in (select im.id from Image im " +
-                                                "join Post p on (im.post = p.id) " +
-                                                "join Author a on (p.author = a.id)" +
-                                                "where a.id=?1)")
+    @Query(value="delete from Image i where i.post.author.id=?1")
     void deleteByAuthorId(int id);
 
     @Transactional
     Long deleteByPostId(int id);
+
+    List<Image> findByPost(int postId);
 }

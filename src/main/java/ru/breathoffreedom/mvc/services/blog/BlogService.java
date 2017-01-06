@@ -1,8 +1,11 @@
 package ru.breathoffreedom.mvc.services.blog;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import ru.breathoffreedom.mvc.models.blog.Comment;
 import ru.breathoffreedom.mvc.models.blog.Post;
 import ru.breathoffreedom.mvc.models.user.Author;
+import ru.breathoffreedom.mvc.models.user.Role;
 import ru.breathoffreedom.mvc.services.blog.filter.AuthorFilter;
 import ru.breathoffreedom.mvc.services.blog.filter.CommentFilter;
 import ru.breathoffreedom.mvc.services.blog.filter.PostFilter;
@@ -22,6 +25,8 @@ public interface BlogService {
 
     Comment save(Comment comment);
 
+    Comment addComment(Comment comment, int postId);
+
     void removeComment(int commentId);
 
     void removeComments(Post post);
@@ -30,6 +35,8 @@ public interface BlogService {
     List<Post> getPosts(Author author);
 
     List<Post> getPosts(PostFilter filter);
+
+    Page<Post> getPosts(PostFilter filter, Pageable page);
 
     Post getPost(int id);
 
@@ -47,5 +54,13 @@ public interface BlogService {
     Author save(Author author);
 
     void removeAuthor(int authorId);
+
+    boolean hasAuthorWithEmail(String email);
+
+    boolean hasAuthorWithNickName(String nickname);
+
+    int setAuthorRole(Author author, Role role);
+
+    Author getAuthor(String email);
 
 }

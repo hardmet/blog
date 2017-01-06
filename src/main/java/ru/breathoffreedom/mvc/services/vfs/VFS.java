@@ -24,6 +24,8 @@ public interface VFS {
 
     String getRoot();
 
+    String getMediaDir();
+
     String getDirectory(String directoryName);
 
     List<File> getPathsToFiles(String rootDirectory);
@@ -35,5 +37,11 @@ public interface VFS {
     boolean removeImages(int postId);
 
     boolean removeImage(Image image, ImageFormat [] formats);
+
+    boolean removeImage(int postId, ImageFormat [] formats);
+
+    String getImage(int imageId, int postId, ImageFormat format);
+
+    String getMainImage(int postId, ImageFormat format);
 
 }

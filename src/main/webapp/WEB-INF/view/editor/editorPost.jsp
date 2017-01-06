@@ -3,15 +3,18 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="page" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<page:basePage>
-    <jsp:attribute name="title">Create post</jsp:attribute>
-
+<page:editorBasePage>
+    <jsp:attribute name="title">Создание поста</jsp:attribute>
+    <jsp:attribute name="scrypt">
+        E.initEditorPost();
+    </jsp:attribute>
     <jsp:body>
         <!-- Page Header -->
         <!-- Set your background image for this header on the line below. -->
         <header class="intro-header">
-            <img class="header-image" src="<c:url value="/img/newpost-header.jpg"/>" height="300px">
+            <img class="header-image" src="<c:url value="/resources/img/edit-post-header.jpg"/>" height="300px">
         </header>
 
         <div class="titles">
@@ -20,7 +23,7 @@
         </div>
 
         <!-- Page Content -->
-        <div class="container">
+        <div class="js-post-content container">
             <!-- Page Heading/Breadcrumbs -->
             <div class="row">
                 <c:if test="${pageContext.request.getParameter('resultAdding') == 'true'}">
@@ -38,21 +41,20 @@
                         </li>
                         <li class="active">Create post</li>
                     </ol>
-                    <c:url value="/post/add" var="send"/>
+
                     <!-- Contact Form -->
                     <!-- In order to set the email address and subject line for the contact form go to the bin/contact_me.php file. -->
                     <h3>Enter fields</h3>
-                    <form name="sentPost" id="contactForm" action="${send}"
-                          method="post" modelAttribute="post">
-                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                        <input class="createdPostId" type="hidden" value="${post.id}"/>
+                    <form:form name="sentPost" class="js-post-form"
+                          method="POST" modelAttribute="post" data-id="${post.id}">
+                        <form:input type="text" path="id" hidden="true"/>
                         <div class="row control-access_group">
                             <div class="form-access_group col-xs-12 floating-label-form-access_group controls">
                                 <div class="controls">
                                     <label for="title">Title:</label>
-                                    <input id="title" type="text" class="form-control" name="title"
-                                           required data-validation-required-message="Please enter title."
-                                           value="${post.title}">
+                                    <form:input id="title" type="text" class="form-control" name="title"
+                                           required="required" data-validation-required-message="Please enter title."
+                                                path="title"/>
                                     <p class="help-block"></p>
                                 </div>
                             </div>
@@ -61,20 +63,35 @@
                             <div class="form-access_group col-xs-12 floating-label-form-access_group controls">
                                 <div class="controls">
                                     <label for="subtitle">Subtitle:</label>
-                                    <input type="tel" class="form-control" id="subtitle" name="subtitle"
-                                           required data-validation-required-message="Please enter subtitle."
-                                        ${post.subtitle}>
+                                    <form:input type="tel" class="form-control" id="subtitle" name="subtitle"
+                                           required="required" path="subtitle"
+                                                data-validation-required-message="Please enter subtitle."/>
                                 </div>
                             </div>
                         </div>
                         <div class="row control-access_group">
                             <div class="form-access_group col-xs-12 floating-label-form-access_group controls">
                                 <label for="text">Text:</label>
-                                <textarea rows="10" cols="100" class="form-control" id="text" name="text"
+                                <form:textarea rows="10" cols="100" class="form-control" id="text" name="text"
                                           required="" maxlength="1500" style="resize:none" placeholder="Text"
-                                          data-validation-required-message="Please enter your text"
-                                value="${post.text}"></textarea>
+                                          data-validation-required-message="Please enter your text" path="text"/>
                                 <p class="help-block text-danger"></p>
+                            </div>
+                        </div>
+                        <div class="row control-access_group">
+                            <div class="form-access_group col-xs-12 floating-label-form-access_group controls">
+                                <label for="actual-published">Опубликовано:</label>
+                                <fmt:formatDate type="date" dateStyle="short" pattern="yyyy-MM-dd" var="theFormattedDate"
+                                                value="${post.published}"/>
+                                <input id="actual-published" class="js-actual-published form-control" type="text"
+                                       readonly="readonly" value="${theFormattedDate}"/>
+                                <form:input path="published" class="js-published form-control" type="hidden"/>
+                            </div>
+                        </div>
+                        <div class="row control-access_group">
+                            <div class="form-access_group col-xs-12 floating-label-form-access_group controls">
+                                <label>Отобразить</label>
+                                <form:checkbox path="visible" title="Отобразить"/>
                             </div>
                         </div>
                         <div id="success"></div>
@@ -83,17 +100,43 @@
                                 <button type="submit" class="btn btn-default">Send</button>
                             </div>
                         </div>
-                    </form>
-                    <!-- Upload file form -->
-                    <form id="upload-file-form">
-                        <label for="upload-file-input">Upload your file:</label>
-                        <input id="upload-file-input" type="file" name="uploadImages" accept="image/*" multiple />
-                    </form>
-                    <progress id="prog" value="0" max="100" class="progress-bar"></progress>
-                    <div id="imgContainer"></div>
+                    </form:form>
+                    <c:if test="${post.id ne 0}">
+                        <div class="js-main-image">
+                            <c:if test="${post.hasMainImage}">
+                                <div class="js-image-block">
+                                    <img width="100px" src="${postMainImage}"/>
+                                    <button class="js-remove-main-image">Удалить</button>
+                                </div>
+                            </c:if>
+                        </div>
+                        <div class="js-main-image">
+                            <jsp:include page="../panel/uploadImagePanel.jsp">
+                                <jsp:param name="type" value="postMain" />
+                                <jsp:param name="isMultiple" value="false" />
+                            </jsp:include>
+                        </div>
+                        <hr>
+                        <c:if test="${not empty images}">
+                            <div class="js-image-gallery">
+                                <c:forEach items="${images.values()}" var="image">
+                                    <div class="js-image-block">
+                                        <img width="100px" src="${image.get(1)}"/>
+                                        <button class="js-remove-image" data-id="${image.get(0)}">Удалить</button>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                        </c:if>
+                        <div class="js-content-images">
+                            <jsp:include page="../panel/uploadImagePanel.jsp">
+                                <jsp:param name="type" value="postContent" />
+                                <jsp:param name="isMultiple" value="true" />
+                            </jsp:include>
+                        </div>
+                    </c:if>
                 </div>
             </div>
         </div>
         <!-- /.row -->
     </jsp:body>
-</page:basePage>
+</page:editorBasePage>

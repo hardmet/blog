@@ -4,6 +4,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity
@@ -17,7 +18,6 @@ public class Author {
     private Date birthday;
     private String email;
     private String password;
-    private Integer image;
     private  boolean enabled;
 
     public Author() {}
@@ -59,7 +59,7 @@ public class Author {
         this.lastName = lastName;
     }
 
-    @NotNull
+    @Column(nullable = false, unique = true)
     public String getNickName() {
         return nickName;
     }
@@ -69,6 +69,7 @@ public class Author {
     }
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(columnDefinition = "TIMESTAMP")
     public Date getBirthday() {
         return birthday;
     }
@@ -77,7 +78,8 @@ public class Author {
         this.birthday = birthday;
     }
 
-    @NotNull
+    @Column(unique = true, nullable = false)
+    @Size(max = 30)
     public String getEmail() {
         return email;
     }
@@ -86,6 +88,8 @@ public class Author {
         this.email = email;
     }
 
+    @Column(nullable = false)
+    @Size(min = 32, max = 100)
     public String getPassword() {
         return password;
     }
@@ -94,21 +98,13 @@ public class Author {
         this.password = password;
     }
 
-    @NotNull
+    @Column(columnDefinition = "boolean default false", nullable = false)
     public boolean isEnabled() {
         return enabled;
     }
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public Integer getImage() {
-        return image;
-    }
-
-    public void setImage(Integer image) {
-        this.image = image;
     }
 
     @Override
@@ -121,7 +117,6 @@ public class Author {
                 ", birthday=" + birthday +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", image=" + image +
                 ", enabled=" + enabled +
                 '}';
     }

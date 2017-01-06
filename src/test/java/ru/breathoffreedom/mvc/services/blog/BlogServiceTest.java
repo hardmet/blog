@@ -5,6 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,30 +28,39 @@ import java.util.List;
 @ContextConfiguration(locations = {"classpath:dispatcher-servlet.xml", "classpath:applicationContext.xml"})
 public class BlogServiceTest {
 
-    private Author firstAuthor;
-    private Author secondAuthor;
+    private static Author firstAuthor;
+    private static Author secondAuthor;
 
-    private Post firstPost;
-    private Post secondPost;
+    private static Post firstPost;
+    private static Post secondPost;
 
-    private Comment firstComment;
-    private Comment secondComment;
-    private Comment thirdComment;
+    private static Comment firstComment;
+    private static Comment secondComment;
+    private static Comment thirdComment;
 
     private AuthorFilter authorFilter;
     private PostFilter postFilter;
     private CommentFilter commentFilter;
+
+    private String email;
+    private String wrongEmail;
+    private String nickName;
+    private String wrongNickName;
 
     @Autowired
     private BlogService blogService;
 
     @Before
     public void setUp() throws Exception {
+        email = "admin@gmail.com";
+        wrongEmail = "jfsdfndskfnk@mail.ru";
+        nickName = "Admin";
+        wrongNickName = "BlackBoots";
         firstAuthor = new Author("Jhon", "Connor", "Saver",
-                new Date(123456789L), "jhon@gmail.ru",
+                null, "jhon@gmail.ru",
                 "$2a$08$MGcfwEVo6K3zc/NwHoHpQuG/IXzePpg8y0tvn0sgj7KRfylZLcpTW", true);
         secondAuthor = new Author("Bill", "Brown", "Grandfather",
-                new Date(987654321L), "jhon@gmail.ru",
+                new Date(987654321L), "bill@gmail.ru",
                 "$2a$08$TE.n99nO.6.ba1WkcpmWZ.p84cb/QVBI4rWj37yKdQWlH/13ira7u", false);
 
         firstPost = new Post(firstAuthor, "Great adventure", "After several niths I realised id!",
@@ -79,6 +90,39 @@ public class BlogServiceTest {
                 " principle of selection: he rejects pleasures to secure other greater pleasures, or else he endures" +
                 " pains to avoid worse pains.", secondPost);
 
+        Author author = blogService.getAuthor(firstAuthor.getEmail());
+//        if (author == null) {
+//            firstAuthor = blogService.save(firstAuthor);
+//        } else {
+//            firstAuthor = blogService.save(author);
+//        }
+//        author = blogService.getAuthor(secondAuthor.getEmail());
+//        if (author == null) {
+//            secondAuthor = blogService.save(secondAuthor);
+//        } else {
+//            secondAuthor = blogService.save(author);
+//        }
+//        if (firstPost.getId() == 0) {
+//            firstPost.setAuthor(firstAuthor);
+//            firstPost = blogService.save(firstPost);
+//        }
+//        if (secondPost.getId() == 0) {
+//            secondPost.setAuthor(secondAuthor);
+//            secondPost = blogService.save(secondPost);
+//        }
+//        if (firstComment.getId() == 0) {
+//            firstComment.setAuthor(secondAuthor);
+//            firstComment = blogService.save(firstComment);
+//        }
+//        if (secondComment.getId() == 0) {
+//            secondComment.setAuthor(firstAuthor);
+//            secondComment = blogService.save(secondComment);
+//        }
+//        if (thirdComment.getId() == 0) {
+//            thirdComment.setAuthor(firstAuthor);
+//            thirdComment = blogService.save(thirdComment);
+//        }
+
         authorFilter = new AuthorFilter();
         postFilter = new PostFilter();
         commentFilter = new CommentFilter();
@@ -86,13 +130,25 @@ public class BlogServiceTest {
 
     @After
     public void tearDown() throws Exception {
-        blogService.removeAuthor(firstAuthor.getId());
-        blogService.removeAuthor(secondAuthor.getId());
-        blogService.removePost(firstPost.getId());
-        blogService.removePost(secondPost.getId());
-        blogService.removeComment(firstComment.getId());
-        blogService.removeComment(secondComment.getId());
-        blogService.removeComment(thirdComment.getId());
+    }
+
+    @Test
+    public void hasAuthorWithEmailAndNicknameTest() {
+        assert blogService.hasAuthorWithEmail(email);
+        assert !blogService.hasAuthorWithEmail(wrongEmail);
+        assert blogService.hasAuthorWithNickName(nickName);
+        assert !blogService.hasAuthorWithNickName(wrongNickName);
+    }
+
+    @Test
+    public void getAuthorTest() {
+        Author author = blogService.getAuthor(email);
+        assert author != null;
+        assert author.getId() != 0;
+        assert author.getNickName().equals("Admin");
+        assert author.getPassword().equals("12345");
+        assert author.getEmail().equals("admin@gmail.com");
+        assert author.isEnabled();
     }
 
     @Transactional
@@ -116,27 +172,29 @@ public class BlogServiceTest {
         int authorId = author.getId();
         assert (authorId != 0);
         Author createdAuthor = blogService.getAuthor(authorId);
-        assert createdAuthor.equals(author);
+        checkAuthor(createdAuthor, author);
     }
 
     @Transactional
     public void updateAuthor(Author source, Author end) {
-        Author temporary = source;
         int authorId = source.getId();
         assert !source.equals(end);
-        source = end;
-        source.setId(authorId);
+        source.setPassword(end.getPassword());
+        source.setEnabled(end.isEnabled());
+        source.setEmail(end.getEmail());
+        source.setLastName(end.getLastName());
+        source.setFirstName(end.getFirstName());
+        source.setNickName(end.getNickName());
+        source.setBirthday(end.getBirthday());
         blogService.save(source);
 
         source = blogService.getAuthor(authorId);
-        assert source.equals(end);
-//        assert source.getBirthday().equals(end.getBirthday());
-//        assert source.getEmail().equals(end.getEmail());
-//        assert source.getFirstName().equals(end.getFirstName());
-//        assert source.getLastName().equals(end.getLastName());
-//        assert source.getNickName().equals(end.getNickName());
-//        assert source.getPassword().equals(end.getPassword());
-        source = temporary;
+        assert source.getBirthday().equals(end.getBirthday());
+        assert source.getEmail().equals(end.getEmail());
+        assert source.getFirstName().equals(end.getFirstName());
+        assert source.getLastName().equals(end.getLastName());
+        assert source.getNickName().equals(end.getNickName());
+        assert source.getPassword().equals(end.getPassword());
         blogService.save(source);
     }
 
@@ -161,17 +219,24 @@ public class BlogServiceTest {
 
     @Transactional
     public void updatePost(Post source, Post end) {
-        Post temporary = source;
         int id = source.getId();
         assert !source.equals(end);
-        source = end;
-        source.setId(id);
+        source.setText(end.getText());
+        source.setTitle(end.getTitle());
+        source.setSubtitle(end.getSubtitle());
+        source.setPublished(end.getPublished());
+        source.setAuthor(end.getAuthor());
+        source.setVisible(end.isVisible());
         blogService.save(source);
 
         source = blogService.getPost(id);
-        assert source.equals(end);
-        source = temporary;
-        blogService.save(source);
+        assert source.getId() != end.getId();
+        assert source.getAuthor().getId() == end.getAuthor().getId();
+        assert source.getPublished().equals(end.getPublished());
+        assert source.getTitle().equals(end.getTitle());
+        assert source.getSubtitle().equals(end.getSubtitle());
+        assert source.getText().equals(end.getText());
+        assert source.isVisible() == end.isVisible();
     }
 
     @Transactional
@@ -198,14 +263,27 @@ public class BlogServiceTest {
         Comment temporary = source;
         int id = source.getId();
         assert !source.equals(end);
-        source = end;
-        source.setId(id);
+        source.setAuthor(end.getAuthor());
+        source.setText(end.getText());
+        source.setPublished(end.getPublished());
+        source.setPost(end.getPost());
         blogService.save(source);
 
         source = blogService.getComment(id);
-        assert source.equals(end);
+        assert source.getId() != end.getId();
+        assert source.getAuthor().getId() == end.getAuthor().getId();
+        assert source.getPublished().equals(end.getPublished());
+        assert source.getPost().getId() == end.getPost().getId();
+        assert source.getText().equals(end.getText());
         source = temporary;
         blogService.save(source);
+    }
+
+    @Test
+    public void addCommentTest()  throws Exception{
+        createAuthor(firstAuthor);
+        Comment comment = blogService.addComment(thirdComment, 2);
+        checkComment(comment, thirdComment);
     }
 
     @Transactional
@@ -224,8 +302,6 @@ public class BlogServiceTest {
         for (Author author : authors) {
             assert author.getPassword() != null;
             assert author.getNickName() != null;
-            assert author.getFirstName() != null;
-            assert author.getLastName() != null;
         }
     }
 
@@ -254,6 +330,72 @@ public class BlogServiceTest {
             assert comment.getPublished() != null;
             assert comment.getText() != null;
             assert comment.getPost() != null;
+        }
+    }
+
+    @Test
+    public void getPostByPageRequestTest() {
+        PostFilter filter = new PostFilter();
+        filter.setVisible(true);
+        List<Post> posts = blogService.getPosts(filter, new PageRequest(0, 100,
+                Sort.Direction.DESC, "published")).getContent();
+        for (Post post : posts) {
+            checkPost(post, filter);
+        }
+
+    }
+
+    public void checkPost(Post post, PostFilter filter) {
+        if (filter.isVisible()) {
+            assert post.isVisible() == filter.isVisible();
+        }
+        if (filter.getSubtitle() != null) {
+            assert post.getSubtitle().equals(filter.getSubtitle());
+        }
+        if (filter.getTitle() != null) {
+            assert post.getTitle().equals(filter.getTitle());
+        }
+        if (filter.getPublished() != null) {
+            assert post.getPublished().equals(filter.getPublished());
+        }
+        if (filter.getAuthor() != null) {
+            assert post.getAuthor().equals(filter.getAuthor());
+        }
+    }
+
+    public void checkComment(Comment commentForTest, Comment commentPattern) {
+        if (commentPattern.getPost() != null) {
+            assert commentForTest.getPost() == commentPattern.getPost();
+        }
+        if (commentPattern.getText() != null) {
+            assert commentForTest.getText().equals(commentPattern.getText());
+        }
+        if (commentPattern.getPublished() != null) {
+            assert commentForTest.getPublished().equals(commentPattern.getPublished());
+        }
+        if (commentPattern.getAuthor() != null) {
+            assert commentForTest.getAuthor().equals(commentPattern.getAuthor());
+        }
+    }
+
+    public void checkAuthor(Author createdAuthor, Author oldAuthor) {
+        assert createdAuthor.getEmail().equals(oldAuthor.getEmail());
+        assert createdAuthor.getPassword().equals(oldAuthor.getPassword());
+        assert createdAuthor.getNickName().equals(oldAuthor.getNickName());
+        if (createdAuthor.getFirstName() != null) {
+            assert createdAuthor.getFirstName().equals(oldAuthor.getFirstName());
+        } else {
+            assert oldAuthor.getFirstName() == null;
+        }
+        if (createdAuthor.getLastName() != null) {
+            assert createdAuthor.getLastName().equals(oldAuthor.getLastName());
+        } else {
+            assert oldAuthor.getLastName() == null;
+        }
+        if (createdAuthor.getBirthday() != null) {
+            assert createdAuthor.getBirthday().equals(oldAuthor.getBirthday());
+        } else {
+            assert oldAuthor.getBirthday() == null;
         }
     }
 

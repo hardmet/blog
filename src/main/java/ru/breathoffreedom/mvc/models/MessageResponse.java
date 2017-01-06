@@ -1,26 +1,40 @@
 package ru.breathoffreedom.mvc.models;
 
+import org.springframework.http.HttpStatus;
+
 /**
  * this is helping class to return responses to client
  */
 public class MessageResponse {
-    private String response;
-    public MessageResponse(String s) {
-        this.response = s;
+    private String message;
+    private HttpStatus status;
+
+    public MessageResponse(HttpStatus status, String s) {
+        this.message = s;
+        this.status = status;
     }
 
-    public String getResponse() {
-        return response;
+    public String getMessage() {
+        return message;
     }
 
-    public void setResponse(String response) {
-        this.response = response;
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public HttpStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(HttpStatus status) {
+        this.status = status;
     }
 
     @Override
     public String toString() {
         return "MessageResponse{" +
-                "response : '" + response + '\'' +
+                "message='" + message + '\'' +
+                ", status=" + status +
                 '}';
     }
 }

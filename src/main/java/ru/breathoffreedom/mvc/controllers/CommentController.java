@@ -6,9 +6,10 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import ru.breathoffreedom.mvc.models.blog.Comment;
-import ru.breathoffreedom.mvc.services.dao.commentDAO.DAOCommentInterface;
-import ru.breathoffreedom.mvc.services.dao.userDAO.DAOUserInterface;
+import ru.breathoffreedom.mvc.models.user.Author;
+import ru.breathoffreedom.mvc.services.blog.BlogService;
 
 
 /**
@@ -16,18 +17,16 @@ import ru.breathoffreedom.mvc.services.dao.userDAO.DAOUserInterface;
  */
 @Controller
 public class CommentController {
-    private final DAOCommentInterface daoCommentService;
-    private final DAOUserInterface daoUserService;
+
+    private BlogService blogService;
 
     /**
      * Important! Use here interfaces, because Spring framework sensitive on it
-     * @param daoCommentService - needed for work with comment table in database
-     * @param daoUserService - needed for work with user table in database
+     * @param blogService - needed for work with comment table in database
      */
     @Autowired
-    public CommentController(DAOCommentInterface daoCommentService, DAOUserInterface daoUserService) {
-        this.daoCommentService = daoCommentService;
-        this.daoUserService = daoUserService;
+    public CommentController(BlogService blogService) {
+        this.blogService = blogService;
     }
 
     /**
@@ -37,21 +36,18 @@ public class CommentController {
      * @return - the page of post with added new comment
      */
     @MessageMapping("/commentToPost/{postId}")
-    @SendTo("/email/add/{postId}")
+    @SendTo("/service/add/{postId}")
     public Comment addComment(Comment comment, @DestinationVariable("postId") int postId) {
-        String email = comment.getAuthor();
-        String author;
-        if (!email.equals("")) {
-            author = daoUserService.findUserByEmail(email).getNickName();
-        } else {
-            author = "Guest";
+        if (comment.getAuthor().getEmail() != null) {
+            String email = comment.getAuthor().getEmail();
+            Author author = blogService.getAuthor(email);
+            if (author == null) {
+                return null;
+            }
+            comment.setAuthor(author);
+            return blogService.save(comment);
         }
-        String text = comment.getText();
-        Comment addedComment = daoCommentService.insertComment(author, text, postId);
-        if (addedComment.getId() == 0 ) {
-            return null;
-        }
-        return addedComment;
+        return null;
     }
 
     /**
@@ -60,8 +56,12 @@ public class CommentController {
      * @return - result of deleting
      */
     @MessageMapping("/commentToDelete/{commentId}")
-    @SendTo("/comment/delete/{commentId}")
-    public boolean deleteComment(@DestinationVariable("commentId") int commentId) {
-        return daoCommentService.deleteComment(commentId);
+    @SendTo("/service/comment/delete/{commentId}")
+    public String deleteComment(@DestinationVariable("commentId") int commentId) {
+        if (blogService.getComment(commentId) == null) {
+            return "failure";
+        }
+        blogService.removeComment(commentId);
+        return "success";
     }
 }

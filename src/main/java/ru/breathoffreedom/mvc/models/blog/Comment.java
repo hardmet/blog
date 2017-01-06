@@ -4,7 +4,6 @@ package ru.breathoffreedom.mvc.models.blog;
 import ru.breathoffreedom.mvc.models.user.Author;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
@@ -14,7 +13,7 @@ public class Comment {
 
     private int id;
     private Author author;
-    private Date published;
+    private Date published = new Date();
     private String text;
     private Post post;
 
@@ -32,7 +31,6 @@ public class Comment {
         return id;
     }
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "author_id")
     public Author getAuthor() {
@@ -43,6 +41,8 @@ public class Comment {
         this.author = author;
     }
 
+    @Column(columnDefinition = "timestamp", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getPublished() {
         return published;
     }
@@ -51,8 +51,7 @@ public class Comment {
         this.published = published;
     }
 
-    @NotNull
-    @Size(min = 5, max = 3000)
+    @Size(min = 3, max = 768)
     public String getText() {
         return text;
     }
@@ -61,7 +60,6 @@ public class Comment {
         this.text = text;
     }
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "post_id")
     public Post getPost() {

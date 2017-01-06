@@ -9,21 +9,21 @@
 
     <jsp:body>
         <header class="intro-header">
-            <img class="header-image" src="<c:url value="/img/all-posts-header.jpg"/>" height="300px">
+            <img class="header-image" src="<c:url value="/resources/img/all-posts-header.jpg"/>" height="300px">
         </header>
 
         <div class="titles">
-            <h1>All posts</h1>
-            <h2 class="subheading">for the all time</h2>
+            <h1>Все посты</h1>
+            <h2 class="subheading">за все время</h2>
         </div>
         <!-- Main Content -->
         <div class="container">
             <div class="row">
                 <div class="main-content">
-                    <c:if test="${!empty data}">
-                        <c:forEach items="${data.values()}" var="post" varStatus="postLoop">
+                    <c:if test="${!empty posts}">
+                        <c:forEach items="${posts}" var="post" varStatus="postLoop">
                             <div class="post-preview">
-                                <a href="post/${post.id}">
+                                <a href="/post/${post.id}">
                                     <h2 class="post-title">
                                             ${post.title}
                                     </h2>
@@ -32,10 +32,9 @@
                                     </h3>
                                 </a>
                                 <p class="post-meta">
-                                    Posted by <a href="/about">${post.author}</a>
-                                    on
-                                    <fmt:setLocale value="en_EN" scope="session"/>
-                                    <fmt:formatDate type="published" dateStyle="long" pattern="MMMM dd, yyyy"
+                                    <a href="<c:url value="/about"/>">${post.author.nickName}</a>
+                                    <fmt:setLocale value="ru_RU" scope="session"/>
+                                    <fmt:formatDate type="date" dateStyle="long" pattern="d MMMM yyyy"
                                                     value="${post.published}"/></p>
                             </div>
                             <c:if test="${!postLoop.last}">
@@ -46,8 +45,5 @@
                 </div>
             </div>
         </div>
-        <hr>
     </jsp:body>
-
-
 </page:basePage>

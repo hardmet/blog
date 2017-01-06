@@ -9,7 +9,7 @@
 
     <jsp:body>
         <header class="intro-header">
-            <img class="header-image" src="<c:url value="/img/index-header.jpg"/>">
+            <img class="header-image" src="<c:url value="/resources/img/index-header.jpg"/>">
         </header>
 
         <div class="titles">
@@ -20,17 +20,17 @@
         <div class="container">
             <div class="row">
                 <div class="main-content">
-                    <c:if test="${!empty data}">
-                        <c:forEach items="${data.values()}" var="post" varStatus="postLoop">
+                    <c:if test="${!empty posts}">
+                        <c:forEach items="${posts}" var="post" varStatus="postLoop">
                             <div class="post-preview">
                                 <a href="post/${post.id}">
                                     <h2 class="post-title">${post.title}</h2>
                                     <h3 class="post-subtitle">${post.subtitle}</h3>
                                 </a>
                                 <p class="post-meta">
-                                    Posted by <a href="<c:url value='/about'/>">${post.author}</a> on
-                                    <fmt:setLocale value="en_EN" scope="session"/>
-                                    <fmt:formatDate type="published" dateStyle="long" pattern="MMMM dd, yyyy"
+                                    <a href="<c:url value='/about'/>">${post.author.nickName}</a>
+                                    <fmt:setLocale value="ru_RU" scope="session"/>
+                                    <fmt:formatDate type="date" dateStyle="long" pattern="d MMMM yyyy"
                                                     value="${post.published}"/></p>
                             </div>
                             <c:if test="${!postLoop.last}">
@@ -41,7 +41,7 @@
                     <!-- Pager -->
                     <ul class="pager">
                         <li class="next">
-                            <a class="btn btn-default" href="<c:url value='/allposts'/>">All Posts &rarr;</a>
+                            <a class="btn btn-default" href="<c:url value='/post/all'/>">Все посты &rarr;</a>
                         </li>
                     </ul>
 

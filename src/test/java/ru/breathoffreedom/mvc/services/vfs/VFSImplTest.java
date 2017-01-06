@@ -64,10 +64,10 @@ public class VFSImplTest {
     @Test
     public void testGetCountOfImages() {
         assert fileSystem.getCountOfImages(directory) != 0;
-        List<String> paths = fileSystem.getPathsToFiles(directory);
-        for (String path : paths) {
-            System.out.println(path);
-        }
+//        List<String> paths = fileSystem.getPathsToFiles(directory);
+//        for (String path : paths) {
+//            System.out.println(path);
+//        }
     }
 
     /**
