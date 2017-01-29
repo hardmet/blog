@@ -56,3 +56,12 @@ h2 {
 .copyright {
   color: #D7DEA9;
 }
+
+.info-hat {
+  margin-top: 0;
+}
+
+.login-error {
+  font-size: x-small;
+  color: red;
+}

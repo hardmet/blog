@@ -17,7 +17,7 @@ html, body {
 }
 
 body {
-    font-family: 'Rubik'. 'Times New Roman', sans-serif;
+    /*font-family: 'Rubik', 'Times New Roman', sans-serif;*/
     font-size: 20px;
     -webkit-tap-highlight-color: #801D1D
 }
@@ -36,7 +36,7 @@ p {
     padding-top: 20px;
 }
 
-.main-content p:nth-last-child() {
+.main-content p:last-child {
     margin-bottom: 0px;
 }
 
@@ -105,13 +105,13 @@ hr.small {
     }
 
     .navbar-custom .nav li a, .navbar-custom .nav li form button, .submenu li a {
-        color: #024863;
+
         padding: 20px;
     }
 
     .navbar-custom .nav li a:focus, .submenu li a:focus,
     .submenu li a:focus, .navbar-custom .nav li a:hover,
-    .navbar-custom .nav li form button:focus, .navbar-custom .nav li form button:hover {
+    .navbar-custom .nav li form:focus, .navbar-custom .nav li form:hover {
         color: #E6DCDF;
         background-color: RGBA(31, 25, 27, .8);
     }
@@ -174,7 +174,7 @@ hr.small {
     height: 360px;
     width: 100%;
     -webkit-background-size: cover;
-    -moz-background-size: cover;
+    /*-moz-background-size: cover;*/
     background-size: cover;
     -o-background-size: cover;
     margin-bottom: 0px;
@@ -248,7 +248,7 @@ hr.small {
 
 .post-preview {
     background: #EFEDFA;
-    padding-left: 5px;px
+    padding-left: 5px;
     padding-right: 5px;
     padding-top: 0px;
     position: relative;
@@ -391,9 +391,9 @@ footer .copyright {
     transition: top .3s ease, opacity .3s ease
 }
 
-.floating-label-form-group::not(:first-child) {
+.floating-label-form-group::not:first-child {
     padding-left: 14px;
-    border-left: 1px solid #eee
+    border-left: 1px solid #eee;
 }
 
 .floating-label-form-group-with-value label {
@@ -453,7 +453,7 @@ form .row:first-child .floating-label-form-group {
 }
 
 ::-moz-selection {
-    color: #fff;
+    color: #D7DEA9;
     text-shadow: none;
     background: #801D1D
 }
@@ -466,18 +466,18 @@ form .row:first-child .floating-label-form-group {
 
 img::selection {
     color: #fff;
-    background: 0 0
+    background: 0 0;
 }
 
 img::-moz-selection {
     color: #fff;
-    background: 0 0
+    background: 0 0;
 }
 
 .edit-post-container {
     background: #D7DEA9;
-    -webkit-border-radius:;
-    -moz-border-radius:;
+    -webkit-border-radius:10px;
+    -moz-border-radius:10px;
     border-radius: 10px;
     color: #2A3C42;
 }
@@ -493,6 +493,7 @@ img::-moz-selection {
     left: 0px;
     list-style: none;
     padding: 0;
+    background-color: #A39FB3;
 }
 
 .nav > li:hover .submenu {

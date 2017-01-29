@@ -1,0 +1,134 @@
+.content > .navbar {
+    min-height: 53px;
+}
+
+.navbar-collapse .nav li, .navbar-collapse .nav li form button {
+    color: #777;
+}
+
+.navbar-custom .nav li a:hover .navbar-custom .nav li form button {
+    color: #E6DCDF;
+}
+
+.navbar-custom .nav li form:hover button {
+    color: #E6DCDF;
+}
+
+.navbar li .submenu {
+    background-color: #EDEFF2;
+}
+
+.navbar-collapse .nav li:hover:last-child {
+    background-color: #fff;
+}
+
+.container-fluid > .in {
+    width: auto;
+}
+
+.container-fluid > .in, .container-fluid > .in ul {
+    margin: 0;
+    padding: 0;
+}
+
+.container-fluid > .in ul {
+    width: 20%;
+}
+
+.in li {
+    display: block;
+}
+
+.navbar-toggle {
+    float: left;
+    margin-left: 8px;
+    margin-right: 0;
+}
+
+.header-image {
+    top: 0;
+    height: 360px;
+    max-width: 100%;
+}
+
+.intro-header {
+    padding-top: 60px;
+    height: auto;
+}
+
+.main-content, .modal-content {
+    width: 75%;
+    padding: 30px;
+}
+
+.main-content > p:first-child {
+    padding-top: 0;
+}
+
+.section-heading {
+    margin-top: 0;
+}
+
+.contact-left-part {
+    text-align: right;
+}
+
+.contact-left-part h3 {
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+abbr[title] {
+    border-bottom: none;
+    cursor: default;
+}
+
+@media only screen and (min-width: 1170px) {
+    .navbar-custom.is-fixed .navbar-nav li ul {
+        /*position: fixed;*/
+        background-color: rgba(144, 149, 163, .3);
+        -webkit-transition: -webkit-transform .3s;
+        -moz-transition: -moz-transform .3s;
+        transition: transform .3s
+    }
+
+    .navbar-custom.is-fixed .nav li:hover:last-child {
+        background-color: rgba(144, 149, 163, .7);
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .navbar-nav > li form button {
+        width: 120px;
+    }
+}
+
+.form-signin .result-edit-author {
+    display: none;
+    border: 1px solid rgb(41, 13, 0);
+    padding: 4px;
+    border-radius: 5px;
+}
+
+.form-signin .message {
+    padding-left: 10px;
+    color: rgb(41, 13, 0);
+}
+
+.form-signin .validation-mes {
+    display: none;
+    color: #D91842;
+}
+
+.form-signin .confirmation {
+    display: none;
+}
+
+.error-field, .form-signin .error-field:focus {
+    border: 1px solid #D91842;
+}
+
+.navbar-custom .nav li form:focus, .navbar-collapse .nav li form button:focus {
+    outline: none;
+}
+

@@ -6,7 +6,8 @@
 html {
     font-family: sans-serif;
     -webkit-text-size-adjust: 100%;
-    -ms-text-size-adjust: 100%
+    -moz-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
 }
 
 body {
@@ -235,7 +236,7 @@ td, th {
 
     h2, h3, p {
         orphans: 3;
-        widows: 3
+        widows: 3;
     }
 
     h2, h3 {
@@ -2489,7 +2490,7 @@ pre code {
 
     .col-md-offset-1 {
         /*margin-left: 8.33333333%*/
-        margin-leftn: auto;
+        margin-left: auto;
         margin-right: auto;
         display: block;
     }
@@ -2916,7 +2917,7 @@ input[type=search] {
 
 input[type=checkbox], input[type=radio] {
     margin: 4px 0 0;
-    margin-top: 1px \9;
+    margin-top: 1px;
     line-height: normal
 }
 
@@ -2976,7 +2977,7 @@ output {
     opacity: 1
 }
 
-.form-control:-ms-input-placeholder {
+.form-control::-ms-input-placeholder {
     color: #999
 }
 
@@ -3041,7 +3042,7 @@ input[type=search] {
 
 .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], .radio input[type=radio], .radio-inline input[type=radio] {
     position: absolute;
-    margin-top: 4px \9;
+    margin-top: 4px;
     margin-left: -20px
 }
 
@@ -3437,7 +3438,6 @@ select[multiple].input-lg, textarea.input-lg {
 
 .btn.disabled, .btn[disabled], fieldset[disabled] .btn {
     cursor: not-allowed;
-    filter: alpha(opacity=65);
     -webkit-box-shadow: none;
     box-shadow: none;
     opacity: .65
@@ -3823,7 +3823,7 @@ tbody.collapse.in {
     margin-left: 2px;
     vertical-align: middle;
     border-top: 4px dashed;
-    border-top: 4px solid \9;
+    border-top: 4px solid;
     border-right: 4px solid transparent;
     border-left: 4px solid transparent
 }
@@ -3951,7 +3951,7 @@ tbody.collapse.in {
     content: "";
     border-top: 0;
     border-bottom: 4px dashed;
-    border-bottom: 4px solid \9
+    border-bottom: 4px solid
 }
 
 .dropup .dropdown-menu, .navbar-fixed-bottom .dropdown .dropdown-menu {
@@ -5608,9 +5608,6 @@ a.thumbnail.active, a.thumbnail:focus, a.thumbnail:hover {
 }
 
 .progress-bar {
-    float: left;
-    width: 0;
-    height: 100%;
     font-size: 12px;
     line-height: 20px;
     color: #fff;
@@ -5688,6 +5685,7 @@ a.thumbnail.active, a.thumbnail:focus, a.thumbnail:hover {
 .media, .media-body {
     overflow: hidden;
     zoom: 1
+    -moz-transform: scale(1);
 }
 
 .media-body {
@@ -6293,7 +6291,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:focus, a.list-g
     line-height: 1;
     color: #000;
     text-shadow: 0 1px 0 #fff;
-    filter: alpha(opacity=20);
+    /*filter: alpha(opacity=20);*/
     opacity: .2
 }
 
@@ -6301,7 +6299,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:focus, a.list-g
     color: #000;
     text-decoration: none;
     cursor: pointer;
-    filter: alpha(opacity=50);
+    /*filter: alpha(opacity=50);*/
     opacity: .5
 }
 
@@ -6383,12 +6381,12 @@ button.close {
 }
 
 .modal-backdrop.fade {
-    filter: alpha(opacity=0);
+    /*filter: alpha(opacity=0);*/
     opacity: 0
 }
 
 .modal-backdrop.in {
-    filter: alpha(opacity=50);
+    /*filter: alpha(opacity=50);*/
     opacity: .5
 }
 
@@ -6479,13 +6477,13 @@ button.close {
     word-spacing: normal;
     word-wrap: normal;
     white-space: normal;
-    filter: alpha(opacity=0);
+    /*filter: alpha(opacity=0);*/
     opacity: 0;
     line-break: auto
 }
 
 .tooltip.in {
-    filter: alpha(opacity=90);
+    /*filter: alpha(opacity=90);*/
     opacity: .9
 }
 
@@ -6836,7 +6834,7 @@ button.close {
     text-align: center;
     text-shadow: 0 1px 2px rgba(0, 0, 0, .6);
     background-color: rgba(0, 0, 0, 0);
-    filter: alpha(opacity=50);
+    /*filter: alpha(opacity=50);*/
     opacity: .5
 }
 
@@ -6920,7 +6918,7 @@ button.close {
     margin: 1px;
     text-indent: -999px;
     cursor: pointer;
-    background-color: #000 \9;
+    background-color: #000;
     background-color: rgba(0, 0, 0, 0);
     border: 1px solid #fff;
     border-radius: 10px
@@ -7044,10 +7042,15 @@ button.close {
     margin: 15px 0px;
     background: #FFFFFF;
     padding: 5px;
+    position: relative;
+    min-height: 65px;
 }
 
 .delete-content {
-    padding: 0 10px;
+    position: absolute;
+    right: 5px;
+    top: 2px;
+    padding: 0 0;
     float: right;
     color: #F50F26;
     text-align: left;
@@ -7061,7 +7064,6 @@ button.close {
 .nav li form button {
     background: transparent;
     border: none;
-    display: block;
 }
 
 .delete-content:hover {
@@ -7074,6 +7076,23 @@ button.close {
 }
 .hidden {
     display: none;
+}
+
+.comment-published {
+    position: absolute;
+    bottom: 0px;
+    right: 5px;
+    float: right;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 100;
+    font-size: 14px;
+    letter-spacing: 0.09em;
+}
+
+.comment-text {
+    position: absolute;
+    bottom: 0px;
+    left: 5px;
 }
 
 @media (max-width: 767px) {
@@ -7303,3 +7322,8 @@ button.close {
 }
 
 /*# sourceMappingURL=bootstrap.min.css.map */
+
+.container-fluid > .navbar-collapse, .container-fluid > .navbar-header,
+.container > .navbar-collapse, .container > .navbar-header {
+    width: 100%;
+}

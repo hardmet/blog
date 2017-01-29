@@ -29,7 +29,7 @@
                 <img class="header-image" src="${postMainImage}" alt="header-image">
             </c:if>
             <c:if test="${!hasMainImage}">
-                <img class="header-image" src="/resources/img/post-bg.jpg" alt="header-image">
+                <img class="header-image" src="<c:url value="/resources/img/post-bg.jpg"/>" alt="header-image">
             </c:if>
         </header>
 

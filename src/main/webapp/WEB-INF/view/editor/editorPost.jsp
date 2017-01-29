@@ -73,7 +73,7 @@
                             <div class="form-access_group col-xs-12 floating-label-form-access_group controls">
                                 <label for="text">Text:</label>
                                 <form:textarea rows="10" cols="100" class="form-control" id="text" name="text"
-                                          required="" maxlength="1500" style="resize:none" placeholder="Text"
+                                          required="" maxlength="10000" style="resize:none" placeholder="Text"
                                           data-validation-required-message="Please enter your text" path="text"/>
                                 <p class="help-block text-danger"></p>
                             </div>
