@@ -28,7 +28,7 @@
 
 
         <!-- Spring Data -->
-        <spring-framework.data.version>1.9.1.RELEASE</spring-framework.data.version>
+        <spring-framework.data.version>1.11.23.RELEASE</spring-framework.data.version>
 
         <!-- Spring Jackson-->
         <jackson.databind-version>2.8.1</jackson.databind-version>
