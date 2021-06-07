@@ -34,7 +34,7 @@
         <jackson.databind-version>2.10.0.pr1</jackson.databind-version>
 
         <!-- LogBack and slf4j-->
-        <logback.version>1.0.13</logback.version>
+        <logback.version>1.2.0</logback.version>
         <slf4j.version>1.7.21</slf4j.version>
 
     </properties>
